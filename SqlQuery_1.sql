@@ -3,9 +3,9 @@ USE Bachelor
 
 CREATE TABLE users (
 users_id INTEGER,
-username VARCHAR(10),
+username VARCHAR(20),
 password VARCHAR(10),
-email VARCHAR(20),
+email VARCHAR(50),
 role VARCHAR(20), 
 phone_number VARCHAR(20),
 PRIMARY KEY (users_id),
@@ -23,7 +23,7 @@ FOREIGN KEY (lecturer_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE
 CREATE TABLE lecturer_fields (
 lecturer_id INTEGER,
 fields VARCHAR(10), /*multivalued should it be different?*/
-PRIMARY KEY(lecturer_id , field),
+PRIMARY KEY(lecturer_id , fields),
 FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
 ); /*should it reference lecturer*/
 
@@ -80,8 +80,7 @@ adress VARCHAR(45),
 age AS (YEAR(CURRENT_TIMESTAMP) - YEAR(date_of_birth)),
 semester INTEGER,
 gpa DECIMAL,/*double doesnt work?*/
-total_bachelor_grade AS((0.3*thesis.total_grade)+(0.3*defense.total_grade)+
-(0.4*comulative_progress_report_grade)),
+/*total_bachelor_grade AS((0.3*thesis.total_grade)+(0.3*defense.total_grade)+ (0.4*comulative_progress_report_grade)),*/
 comulative_progress_report_grade AS AVG(progress_report.grade), /*recheck grade odam*/
 PRIMARY KEY (student_id),
 FOREIGN KEY (student_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -176,9 +175,9 @@ total_grade INTEGER,
 PRIMARY KEY (student_id),
 PRIMARY KEY (title),
 FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-Where : Thesis.Total_Grade =
+/*Where : Thesis.Total_Grade =
 Calculated((GradeAcademicThesis.EE_grade+GradeAcademicThesis.Lecturer_grade)/2 or
-(GradeIndustrialThesis.Company_grade & GradeIndustrialThesis.Employee_grade)/2) /*ask about this*/
+(GradeIndustrialThesis.Company_grade & GradeIndustrialThesis.Employee_grade)/2) */
 );
 
 CREATE TABLE defense(
@@ -190,9 +189,9 @@ total_grade INTEGER,
 PRIMARY KEY (student_id),
 PRIMARY KEY (defense_location),
 FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-Where : Defense.Total_Grade = Calculated((GradeAcademicDefense.EE_grade +
+/*Where : Defense.Total_Grade = Calculated((GradeAcademicDefense.EE_grade +
 GradeAcademicDefense.Lecturer_grade)/2 or
-(GradeIndustrialDefense.Compay_grade+GradeIndustrialDefense.Employee_grade)/2
+(GradeIndustrialDefense.Compay_grade+GradeIndustrialDefense.Employee_grade)/2*/
 );
 
 CREATE TABLE progress_report(
@@ -205,8 +204,8 @@ PRIMARY KEY (student_id),
 PRIMARY KEY (progress_report_date),
 FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (updating_user_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE,
-Where : ProgressReport.Grade = Calculated((GradeAcademicPR.LecGrade) or
-(GradeIndustrialPR.Company_grade+GradeAcademicPR.Lecturer_grade)/2)
+/*Where : ProgressReport.Grade = Calculated((GradeAcademicPR.LecGrade) or
+(GradeIndustrialPR.Company_grade+GradeAcademicPR.Lecturer_grade)/2)*/
 );
 
 CREATE TABLE grade_industrial_progress_report (
