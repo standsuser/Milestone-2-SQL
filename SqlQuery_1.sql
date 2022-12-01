@@ -68,59 +68,6 @@ CREATE TABLE coordinator(
     FOREIGN KEY (coordinator_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE student(
-    student_id INTEGER,
-    first_name VARCHAR(15),
-    last_name VARCHAR(15),
-    major_code INTEGER,
-    date_of_birth DATE,
-    adress VARCHAR(45),
-    age AS (YEAR(CURRENT_TIMESTAMP) - YEAR(date_of_birth)),
-    semester INTEGER,
-    gpa DECIMAL,
-    /*double doesnt work?*/
-    /*total_bachelor_grade AS((0.3*thesis.total_grade)+(0.3*defense.total_grade)+ (0.4*comulative_progress_report_grade)),
-     comulative_progress_report_grade AS AVG(progress_report.grade), recheck grade odam*/
-    PRIMARY KEY (student_id),
-    FOREIGN KEY (student_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (major_code) REFERENCES major(major_code) ON DELETE CASCADE ON UPDATE CASCADE,
-);
-
-CREATE TABLE bachelor_project(
-    code INTEGER,
-    name VARCHAR(20),
-    submitted_materials VARCHAR(100),
-    description VARCHAR(100) PRIMARY KEY (code)
-);
-
-CREATE TABLE bachelor_submitted_materials(
-    code INTEGER,
-    material VARCHAR(30) PRIMARY KEY (code),
-    FOREIGN KEY (code) REFERENCES bachelor_project(porject_code) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE academic(
-    academic_code INTEGER,
-    lecturer_id INTEGER,
-    teaching_assistant_id INTEGER,
-    external_examiner_id INTEGER,
-    PRIMARY KEY (academic_code),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (teaching_assistant_id) REFERENCES teaching_assistant(teaching_assistant_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE industrial(
-    industrial_code INTEGER,
-    company_id INTEGER,
-    lecturer_id INTEGER,
-    staff_id INTEGER,
-    PRIMARY KEY (industrial_code),
-    FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (staff_id) REFERENCES employee(staff_id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 CREATE TABLE faculty(
     faculty_code INTEGER,
     name VARCHAR(20),
@@ -135,6 +82,64 @@ CREATE TABLE major(
     faculty_code INTEGER,
     PRIMARY KEY (major_code),
     FOREIGN KEY (faculty_code) REFERENCES faculty(faculty_code) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+/*------------------error begin-------------------*/
+CREATE TABLE student(
+    student_id INTEGER,
+    first_name VARCHAR(15),
+    last_name VARCHAR(15),
+    major_code INTEGER,
+    date_of_birth DATE,
+    adress VARCHAR(45),
+    age AS (YEAR(CURRENT_TIMESTAMP) - YEAR(date_of_birth)),
+    semester INTEGER,
+    gpa DECIMAL,
+    /*double doesnt work?*/
+    /*total_bachelor_grade AS((0.3*thesis.total_grade)+(0.3*defense.total_grade)+ (0.4*comulative_progress_report_grade)),
+     comulative_progress_report_grade AS AVG(progress_report.grade), recheck grade odam*/
+    PRIMARY KEY (student_id),
+    FOREIGN KEY (student_id) REFERENCES users(users_id),
+    FOREIGN KEY (major_code) REFERENCES major(major_code)
+    /*i removed update cascades because it was causing an error revise what to type then*/
+);
+
+CREATE TABLE bachelor_project(
+    code INTEGER,
+    name VARCHAR(20),
+    submitted_materials VARCHAR(100),
+    description VARCHAR(100) PRIMARY KEY (code)
+);
+
+CREATE TABLE bachelor_submitted_materials(
+    code INTEGER,
+    material VARCHAR(30),
+    PRIMARY KEY (code),
+    FOREIGN KEY (code) REFERENCES bachelor_project(code) ON DELETE CASCADE ON UPDATE CASCADE
+    /*eshme3na cascade hena doesnt cause error*/
+);
+
+CREATE TABLE academic(
+    academic_code INTEGER,
+    lecturer_id INTEGER,
+    teaching_assistant_id INTEGER,
+    external_examiner_id INTEGER,
+    PRIMARY KEY (academic_code),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (teaching_assistant_id) REFERENCES teaching_assistant(teaching_assistant_id),
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id)
+);
+
+CREATE TABLE industrial(
+    /*bayez*/
+    industrial_code INTEGER,
+    company_id INTEGER,
+    lecturer_id INTEGER,
+    staff_id INTEGER,
+    PRIMARY KEY (industrial_code),
+    FOREIGN KEY (company_id) REFERENCES company(company_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (staff_id) REFERENCES employee(staff_id)
 );
 
 CREATE TABLE meeting(
@@ -203,6 +208,7 @@ CREATE TABLE progress_report(
 );
 
 CREATE TABLE grade_industrial_progress_report (
+    /*bayez*/
     lecturer_id INTEGER,
     content varchar(20),
     company_id INTEGER,
@@ -211,13 +217,14 @@ CREATE TABLE grade_industrial_progress_report (
     progress_report_date datetime,
     company_grade INTEGER,
     PRIMARY KEY (student_id, progress_report_date),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (company_id) REFERENCES company(Company_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES student_id(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (progress_report_date) REFERENCES progress_report(progress_report_date) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (company_id) REFERENCES company(Company_id),
+    FOREIGN KEY (student_id) REFERENCES student_id(student_id),
+    FOREIGN KEY (progress_report_date) REFERENCES progress_report(progress_report_date),
 );
 
 CREATE TABLE grade_academic_progress_report (
+    /*bayez*/
     lecturer_id INTEGER,
     student_id INTEGER,
     lecturer_grade INTEGER,
@@ -229,6 +236,7 @@ CREATE TABLE grade_academic_progress_report (
 );
 
 CREATE TABLE grade_academic_thesis (
+    /*bayez*/
     lecturer_id INTEGER,
     external_examiner_id INTEGER,
     student_id INTEGER,
@@ -243,6 +251,7 @@ CREATE TABLE grade_academic_thesis (
 );
 
 CREATE TABLE grade_industrial_thesis(
+    /*bayez*/
     company_id INTEGER,
     staff_id INTEGER,
     student_id INTEGER,
@@ -257,6 +266,7 @@ CREATE TABLE grade_industrial_thesis(
 );
 
 CREATE TABLE grade_academic_defense (
+    /*bayez*/
     lecturer_id INTEGER,
     external_examiner_id INTEGER,
     student_id INTEGER,
@@ -271,6 +281,7 @@ CREATE TABLE grade_academic_defense (
 );
 
 CREATE TABLE grade_industrial_defense (
+    /*bayez*/
     company_id INTEGER,
     staff_id INTEGER,
     student_id INTEGER,
@@ -304,6 +315,7 @@ CREATE TABLE student_preferences(
 );
 
 CREATE TABLE major_has_bachelor_project(
+    /*bayez*/
     major_code INTEGER,
     project_code INTEGER,
     PRIMARY KEY (major_code, project_code),
@@ -312,4 +324,4 @@ CREATE TABLE major_has_bachelor_project(
 );
 
 /* update notes: spelling mistakes and main errors fixed. entities tables are created
- BUT relationsforeign keys have error issues when ran separately and aren't created */
+ BUT relation tables foreign keys have error issues when ran separately and aren't created */
