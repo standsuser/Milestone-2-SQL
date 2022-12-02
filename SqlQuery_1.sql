@@ -43,7 +43,7 @@ CREATE TABLE employee(
     email VARCHAR(20),
     field VARCHAR(20),
     phone VARCHAR(20),
-    PRIMARY KEY (staff_id),
+    PRIMARY KEY (staff_id, company_id),
     FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE (username)
 );
@@ -134,14 +134,12 @@ CREATE TABLE industrial(
     /*bayez*/
     industrial_code INTEGER,
     company_id INTEGER,
-    employee_company_id INTEGER,/*extra to stop error*/
     lecturer_id INTEGER,
     staff_id INTEGER,
     PRIMARY KEY (industrial_code),
     FOREIGN KEY (company_id) REFERENCES company(company_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
-    FOREIGN KEY (staff_id) REFERENCES employee(staff_id)
-
+    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
 );
 
 CREATE TABLE meeting(
@@ -151,11 +149,20 @@ CREATE TABLE meeting(
     meeting_date DATE,
     start_time TIME,
     end_time TIME,
-    /*duration SUM(DATEDIFF(MINUTE, End_Time,Start_Time)) , HOW TO ADD? SHOULD WE ADD IT ASLAN?*/
+    /*duration as (end_time)-(start_time), how to do it */
     PRIMARY KEY (meeting_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+/*
+ SELECT TIME(end_time - start_time)
+ AS total_time 
+ from meeting
+ 
+ alter table the_table
+ add column total_time time null;
+ 
+ update the table set total_time = unload_time - record_time;*/
 CREATE TABLE meeting_to_do_list(
     meeting_id INTEGER,
     to_do_list VARCHAR(200),
@@ -202,7 +209,7 @@ CREATE TABLE progress_report(
     updating_user_id INTEGER,
     progress_report_date datetime,
     grade INTEGER,
-    PRIMARY KEY (student_id, progress_report_date),
+    PRIMARY KEY (progress_report_date, student_id),
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (updating_user_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE,
     /*Where : ProgressReport.Grade = Calculated((GradeAcademicPR.LecGrade) or
@@ -210,35 +217,33 @@ CREATE TABLE progress_report(
 );
 
 CREATE TABLE grade_industrial_progress_report (
-    /*bayez*/
+    /*help should we referennce foreign key progress rep joint styudent id and student id referencing stuident or just once*/
     lecturer_id INTEGER,
-    content varchar(20),
     company_id INTEGER,
     student_id INTEGER,
     lecturer_grade INTEGER,
+    content varchar(20),
     progress_report_date datetime,
     company_grade INTEGER,
     PRIMARY KEY (student_id, progress_report_date),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
     FOREIGN KEY (company_id) REFERENCES company(Company_id),
-    FOREIGN KEY (student_id) REFERENCES student_id(student_id),
-    FOREIGN KEY (progress_report_date) REFERENCES progress_report(progress_report_date),
+    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id),
 );
 
 CREATE TABLE grade_academic_progress_report (
-    /*bayez*/
     lecturer_id INTEGER,
     student_id INTEGER,
     lecturer_grade INTEGER,
     progress_report_date datetime,
     PRIMARY KEY (progress_report_date, lecturer_id, student_id),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (progress_report_date) REFERENCES progress_report(progress_report_date) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id),
 );
 
 CREATE TABLE grade_academic_thesis (
-    /*bayez*/
     lecturer_id INTEGER,
     external_examiner_id INTEGER,
     student_id INTEGER,
@@ -246,14 +251,13 @@ CREATE TABLE grade_academic_thesis (
     lecturer_grade INTEGER,
     external_examiner_grade INTEGER,
     PRIMARY KEY (student_id, lecturer_id, title),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (external_examiner_id) REFERENCES ecternal_examiner(external_examiner_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (title) REFERENCES thesis(title) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (student_id, title) REFERENCES thesis(student_id, title)
 );
 
 CREATE TABLE grade_industrial_thesis(
-    /*bayez*/
     company_id INTEGER,
     staff_id INTEGER,
     student_id INTEGER,
@@ -261,14 +265,13 @@ CREATE TABLE grade_industrial_thesis(
     company_grade INTEGER,
     staff_grade INTEGER,
     PRIMARY KEY (student_id, title),
-    FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (staff_id) REFERENCES employee(staff_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (title) REFERENCES thesis(title) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (company_id) REFERENCES company(company_id),
+    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (student_id, title) REFERENCES thesis(student_id, title)
 );
 
 CREATE TABLE grade_academic_defense (
-    /*bayez*/
     lecturer_id INTEGER,
     external_examiner_id INTEGER,
     student_id INTEGER,
@@ -276,14 +279,13 @@ CREATE TABLE grade_academic_defense (
     lecturer_grade INTEGER,
     external_examiner_grade INTEGER,
     PRIMARY KEY (student_id, defense_location),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (defense_location) REFERENCES defense(defense_location) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (student_id, defense_location) REFERENCES defense(student_id, defense_location),
 );
 
-CREATE TABLE grade_industrial_defense (
-    /*bayez*/
+DROP TABLE grade_industrial_defense CREATE TABLE grade_industrial_defense (
     company_id INTEGER,
     staff_id INTEGER,
     student_id INTEGER,
@@ -292,9 +294,10 @@ CREATE TABLE grade_industrial_defense (
     employee_grade INTEGER,
     PRIMARY KEY (student_id, defense_location),
     FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (staff_id) REFERENCES employee(staff_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (defense_location) REFERENCES defense(defense_location) ON DELETE CASCADE ON UPDATE CASCADE,
+    /*SHOULD WE KEEP ON DELETE CASCADE ON UPDATE CASCADE WHY DOES IT WORK HERE ONLY*/
+    FOREIGN KEY (student_id, defense_location) REFERENCES defense(student_id, defense_location),
 );
 
 CREATE TABLE lecturer_recommend_external_examiner(
@@ -317,12 +320,11 @@ CREATE TABLE student_preferences(
 );
 
 CREATE TABLE major_has_bachelor_project(
-    /*bayez*/
     major_code INTEGER,
     project_code INTEGER,
     PRIMARY KEY (major_code, project_code),
     FOREIGN KEY (major_code) REFERENCES major(major_code) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (project_code) REFERENCES bachelor_project(project_code) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (project_code) REFERENCES bachelor_project(code) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 /* update notes: spelling mistakes and main errors fixed. entities tables are created
