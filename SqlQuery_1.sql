@@ -7,7 +7,7 @@
     phone_number VARCHAR(20),
     PRIMARY KEY (users_id),
     UNIQUE (username, email)
-);
+); /*DO WE ADD PRIMARY KEY IDS FOR USER OURSELVES IN INSERT OR LET IT BE AUTOMATICALLY GENERATED?*/
 
 CREATE TABLE lecturer (
     lecturer_id INTEGER,
