@@ -43,7 +43,7 @@ CREATE TABLE employee(
     email VARCHAR(20),
     field VARCHAR(20),
     phone VARCHAR(20),
-    PRIMARY KEY (staff_id, company_id),
+    PRIMARY KEY (staff_id),
     FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE (username)
 );
@@ -134,12 +134,14 @@ CREATE TABLE industrial(
     /*bayez*/
     industrial_code INTEGER,
     company_id INTEGER,
+    employee_company_id INTEGER,/*extra to stop error*/
     lecturer_id INTEGER,
     staff_id INTEGER,
     PRIMARY KEY (industrial_code),
     FOREIGN KEY (company_id) REFERENCES company(company_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
     FOREIGN KEY (staff_id) REFERENCES employee(staff_id)
+
 );
 
 CREATE TABLE meeting(
