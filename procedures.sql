@@ -20,7 +20,7 @@ CREATE PROC UserRegister
 /* is this correct? should anything be not null should it be specific with nested ifs? or general?*/
 
 AS
-IF @usertype IS NULL or @userName IS NULL or @email IS NULL 
+IF @usertype IS NULL or @username IS NULL or @email IS NULL 
 print 'One of the main inputs is null'
 
 
@@ -34,20 +34,30 @@ IF @usertype = 'Students' AND
     @gpa IS NULL)
 
 print 'One of the student values is null'
-ELSE
+ELSE IF @usertype = 'Students'
+BEGIN 
 INSERT INTO users(role, username, email)
     VALUES (@usertype ,  @userName , @email)
-
-
+INSERT INTO student(first_name, last_name, major_code, birth_date,adress, semester, gpa)
+    VALUES(@first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
+END
 IF @usertype = 'Companies' AND
-    
-    (@company_name IS NULL or 
+ (@company_name IS NULL or 
 @representative_name IS NULL or 
 @representative_email IS NULL or 
 @address IS NULL)  /*is location of company the address?*/
 
 print 'One of the company values is null' 
 
-ELSE
+ELSE IF @usertype = 'Company'
+
+BEGIN
 INSERT INTO users(role, username, email)
     VALUES (@usertype ,  @userName , @email)
+INSERT INTO company(company_name, representative_name, representative_email, company_location, )
+    VALUES (@company_name, representative_name, @representative_email, @address)
+END
+IF 
+
+
+

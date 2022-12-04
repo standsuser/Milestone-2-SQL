@@ -24,13 +24,13 @@ CREATE TABLE lecturer_fields (
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-/*should it reference lecturer*/
+
 CREATE TABLE company (
     company_id INTEGER,
-    name VARCHAR(20),
+    company_name VARCHAR(20),
     representative_name VARCHAR(10),
     representative_email VARCHAR(20),
-    location VARCHAR(50),
+    company_location VARCHAR(50),
     PRIMARY KEY(company_id),
     FOREIGN KEY (company_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -131,15 +131,15 @@ CREATE TABLE academic(
 );
 
 CREATE TABLE industrial(
-    /*bayez*/
+    
     industrial_code INTEGER,
     company_id INTEGER,
     lecturer_id INTEGER,
     staff_id INTEGER,
     PRIMARY KEY (industrial_code),
-    FOREIGN KEY (company_id) REFERENCES company(company_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
     FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
+    FOREIGN KEY (company_id) REFERENCES company(company_id),
 );
 
 CREATE TABLE meeting(
