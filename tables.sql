@@ -285,7 +285,7 @@ CREATE TABLE grade_academic_defense (
     FOREIGN KEY (student_id, defense_location) REFERENCES defense(student_id, defense_location),
 );
 
-DROP TABLE grade_industrial_defense CREATE TABLE grade_industrial_defense (
+CREATE TABLE grade_industrial_defense (
     company_id INTEGER,
     staff_id INTEGER,
     student_id INTEGER,
