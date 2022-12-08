@@ -2,7 +2,7 @@
 USE Bachelor
 
 CREATE TABLE users (
-    users_id INTEGER,
+    users_id INTEGER IDENTITY,
     username VARCHAR(20),
     user_password VARCHAR(10),
     email VARCHAR(50),

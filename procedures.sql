@@ -1,4 +1,4 @@
-﻿
+﻿--
 CREATE PROC UserRegister /*figure out how to return password and user_id and also what to insert in the tables down below (also external supervisor doesnt exist??))*/
 @usertype varchar(20),
 @username varchar(20), 
@@ -15,8 +15,9 @@ CREATE PROC UserRegister /*figure out how to return password and user_id and als
 @representative_name varchar(20), 
 @representative_email varchar(50), 
 @phone_number varchar(20),
-@country_of_residence varchar(20)
-
+@country_of_residence varchar(20),
+@users_id int output,
+@password varchar(10) output
 /* is this correct? should anything be not null should it be specific with nested ifs? or general?*/
 
 AS
@@ -26,7 +27,7 @@ print 'One of the main inputs is null'
 
 IF @usertype = 'student' AND
  (@first_name IS NULL or 
-@last_name IS NULL or 
+    @last_name IS NULL or 
     @major_code IS NULL or 
     @birth_date IS NULL or 
     @address IS NULL or 
@@ -40,6 +41,8 @@ INSERT INTO users(user_role, username, email)
     VALUES (@usertype , @username , @email)
 INSERT INTO student(first_name, last_name, major_code, date_of_birth,adress, semester, gpa)
     VALUES(@first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
+   set @users_id = (select max(users_id) from users)
+   set @password = (select max(users_id) from users)
 END
 IF @usertype = 'company' AND
  (@company_name IS NULL or 
@@ -56,31 +59,25 @@ INSERT INTO users(user_role, username, email)
     VALUES (@usertype ,  @username , @email)
 INSERT INTO company(company_name, representative_name, representative_email, company_location )
     VALUES (@company_name, @representative_name, @representative_email, @address)
+
+   set @users_id = (select max(users_id) from users)
+   set @password = (select max(users_id) from users)
 END
-IF @usertype = 'employee' and
- @username IS NULL or @email IS NULL or @phone_number IS NULL 
- print 'One of the employee values is null'
- ELSE IF @usertype = 'employee'
- BEGIN 
- INSERT INTO users(user_role, username, email)
-    VALUES (@usertype ,  @username , @email)
- INSERT INTO employee(username, email, phone_number)
-    VALUES(@username, @email, @phone_number)
-END 
 IF @usertype = 'teaching_assistant' 
 BEGIN
- /*INSERT INTO teaching_assistant()
-    VALUES ()*/
+ INSERT INTO users(username,email, user_role, phone_number)
+    VALUES (@username, @email, @usertype, @phone_number)
+
 END
 IF @usertype = 'external_examiner'
    BEGIN 
-   /*INSERT INTO external_examiner()
-     VALUES()*/
+   INSERT INTO users(username,email, user_role, phone_number)
+     VALUES (@username, @email, @usertype, @phone_number)
 END
 IF @usertype = 'coordinator'
     BEGIN 
-    /*INSERT INTO coordinator()
-        VALUES()*/
+    INSERT INTO users(username,email, user_role, phone_number)
+    VALUES (@username, @email, @usertype, @phone_number)
 END
 GO
 
