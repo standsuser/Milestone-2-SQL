@@ -1,7 +1,7 @@
 ﻿
-CREATE PROC UserRegister
+CREATE PROC UserRegister /*figure out how to return password and user_id and also what to insert in the tables down below (also external supervisor doesnt exist??))*/
 @usertype varchar(20),
-@userName varchar(20), 
+@username varchar(20), 
 @email varchar(50) , /*should i specify unique here or just in the first sql file*/
 @first_name varchar(20),
 @last_name varchar(20), 
@@ -24,7 +24,7 @@ IF @usertype IS NULL or @username IS NULL or @email IS NULL
 print 'One of the main inputs is null'
 
 
-IF @usertype = 'Students' AND
+IF @usertype = 'student' AND
  (@first_name IS NULL or 
 @last_name IS NULL or 
     @major_code IS NULL or 
@@ -34,14 +34,14 @@ IF @usertype = 'Students' AND
     @gpa IS NULL)
 
 print 'One of the student values is null'
-ELSE IF @usertype = 'Students'
+ELSE IF @usertype = 'student'
 BEGIN 
-INSERT INTO users(role, username, email)
-    VALUES (@usertype ,  @userName , @email)
-INSERT INTO student(first_name, last_name, major_code, birth_date,adress, semester, gpa)
+INSERT INTO users(user_role, username, email)
+    VALUES (@usertype , @username , @email)
+INSERT INTO student(first_name, last_name, major_code, date_of_birth,adress, semester, gpa)
     VALUES(@first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
 END
-IF @usertype = 'Companies' AND
+IF @usertype = 'company' AND
  (@company_name IS NULL or 
 @representative_name IS NULL or 
 @representative_email IS NULL or 
@@ -49,15 +49,42 @@ IF @usertype = 'Companies' AND
 
 print 'One of the company values is null' 
 
-ELSE IF @usertype = 'Company'
+ELSE IF @usertype = 'company'
 
 BEGIN
-INSERT INTO users(role, username, email)
-    VALUES (@usertype ,  @userName , @email)
-INSERT INTO company(company_name, representative_name, representative_email, company_location, )
-    VALUES (@company_name, representative_name, @representative_email, @address)
+INSERT INTO users(user_role, username, email)
+    VALUES (@usertype ,  @username , @email)
+INSERT INTO company(company_name, representative_name, representative_email, company_location )
+    VALUES (@company_name, @representative_name, @representative_email, @address)
 END
-IF 
+IF @usertype = 'employee' and
+ @username IS NULL or @email IS NULL or @phone_number IS NULL 
+ print 'One of the employee values is null'
+ ELSE IF @usertype = 'employee'
+ BEGIN 
+ INSERT INTO users(user_role, username, email)
+    VALUES (@usertype ,  @username , @email)
+ INSERT INTO employee(username, email, phone_number)
+    VALUES(@username, @email, @phone_number)
+END 
+IF @usertype = 'teaching_assistant' 
+BEGIN
+ /*INSERT INTO teaching_assistant()
+    VALUES ()*/
+END
+IF @usertype = 'external_examiner'
+   BEGIN 
+   /*INSERT INTO external_examiner()
+     VALUES()*/
+END
+IF @usertype = 'coordinator'
+    BEGIN 
+    /*INSERT INTO coordinator()
+        VALUES()*/
+END
+GO
 
+CREATE PROC AddEmployee @company_id int, @email VARCHAR(50), @name VARCHAR(20), @phone_number VARCHAR(20), @field VARCHAR(25)
+AS
 
 

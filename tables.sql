@@ -1,9 +1,12 @@
-﻿CREATE DATABASE Bachelor USE Bachelor CREATE TABLE users (
+﻿CREATE DATABASE Bachelor 
+USE Bachelor
+
+CREATE TABLE users (
     users_id INTEGER,
     username VARCHAR(20),
-    password VARCHAR(10),
+    user_password VARCHAR(10),
     email VARCHAR(50),
-    role VARCHAR(20),
+    user_role VARCHAR(20),
     phone_number VARCHAR(20),
     PRIMARY KEY (users_id),
     UNIQUE (username, email)
@@ -39,7 +42,7 @@ CREATE TABLE employee(
     staff_id INTEGER,
     company_id INTEGER,
     username VARCHAR(10),
-    password VARCHAR(10),
+    employee_password VARCHAR(10),
     email VARCHAR(20),
     field VARCHAR(20),
     phone VARCHAR(20),
