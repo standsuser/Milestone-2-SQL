@@ -13,18 +13,22 @@ values
 ('beautycosmetics','cosmeticsb','bcomsmetics@gmail.com','Companies',54637892874),
 ('travelagency','travel5','thetravelagency@gmail.com','Companies',587573692),
 ('pcatering','caterer','partycaterers@gmail.com','Companies',083293383),
-('ahmedaly','alyyylol','ahmedaly@gmail.com','external_examiners',0120655262887),
-('mohamedmohamed','mohaaa232','mohamed@gmail.com','external_examiners',60607080),
-('samerghanem','sameeeeeer','sameerghanem@gmail.com','external_examiners',75478728359),
-('amalhany','ama3llll','amalhany@gmail.com','teaching_assistant',98498273498),
-('amrhelaly','amramr','helaly@gmail.com','teaching_assistant',483098294),
-('eyaddd','eyy323','eyad22@gmail.com','teaching_assistant',743946390),
+('ahmedaly','alyyylol','ahmedaly@gmail.com','External examiners',0120655262887),
+('mohamedmohamed','mohaaa232','mohamed@gmail.com','External examiners',60607080),
+('samerghanem','sameeeeeer','sameerghanem@gmail.com','External examiners',75478728359),
+('amalhany','ama3llll','amalhany@gmail.com','Teaching assistants',98498273498),
+('amrhelaly','amramr','helaly@gmail.com','Teaching assistants',483098294),
+('eyaddd','eyy323','eyad22@gmail.com','Teaching assistants',743946390),
 ('malakmohamed','moka11','malak@gmail.com','Coordinators',12332828),
 ('haniahany','HhHany','haniaaa@gmail.com','Coordinators',859420494),
 ('raghadtarmoom','raghadjpg','tarmoom@gmail.com','Coordinators',38383883),
 ('haythamamro','haythooo','amroo@gmail.com','Students',57275092759),
 ('aymanshady','aymooon','shadyy@gmail.com','Students',84759075),
-('habiba.magdy','aboelmagd','habiba123@gmail.com','Students',7395798);
+('habiba.magdy','aboelmagd','habiba123@gmail.com','Students',7395798),
+('mariammohamed','marioma','marioma@gmail.com','Students',0192783683),
+('mohamedmohamed','elmohamed','mohamed23@gmail.com','Students',52652833),
+('hanaahmed','hanaa','hana65@gmail.com','Students',383738739),
+('marwanmohamed','yuyumarwan','marwan45@gmail.com','Students',39373897);
 
 insert into lecturer(lecturer_id,schedule)
 values (3,'sunday to thursday'),
@@ -84,14 +88,22 @@ insert into student(student_id,first_name,last_name,major_code,date_of_birth,adr
 values(1,'ahmed','mazen',123,'2003-12-12','cairo',4,2.3), 
 (23,'haytham','amro',123,'2004-06-05','cairo',2,2.3),
 (24,'ayman','shady',124,'2002-09-13','cairo',6,3),
-(25,'habiba','magdy',126,'2000-01-01','cairo',8,4.2);
+(25,'habiba','magdy',126,'2000-01-01','cairo',8,4.2),
+(26,'mariam','mohamed',123,'2003-09-14','cairo',3,0.7),
+(27,'mohamed','mohamed',124,'2002-03-03','cairo',4,4),
+(28,'hana','ahmed',125,'2002-03-04','cairo',6,3),
+(29,'marwan','mohamed',126,'2003-11-30','cairo',2,1.2);
 
 
 insert into bachelor_project(code,project_name,submitted_materials,pdescription)
 values(3425,'Cybersecurity','part one','project for security'),
 (6272,'Product Management','last part','business bachelor project'),
 (9289,'Data Science','part three','informatics and computer science '),
-(2323,'Design Projects','design two','illusions designs');
+(2323,'Design Projects','design two','illusions designs'),
+(5555,'Business','part one','project for business'),
+(3343,'Management','fifth part','business bachelor project'),
+(5655,'Databases ','part three','informatics and computer science '),
+(3933,'Design Project 1','design three','illusions designs');
 
 insert into bachelor_submitted_materials(code,material)
 values(3425,'java code'),
@@ -110,12 +122,13 @@ values (90,7,3,34),
 (91,11,8,35),
 (92,12,9,36),
 (93,13,10,37);
-/*-----------------------------*/
+
+
 insert into meeting(meeting_point,lecturer_id,meeting_date,start_time,end_time)
-values ('point B',3,'2021-1-2','13:30','15:40'),
-('point B',8,'2021-1-2','13:30','15:40'),
-('point B',9,'2021-2-1','13:30','15:40'),
-('point B',10,'2021-3-10','13:30','15:40');
+values ('B',3,'2021-1-2','20210102 13:30','20210102 15:40'),
+('A',8,'2021-1-2','20210102 13:30','20210102 15:40'),
+('C',9,'2021-2-1','20210102 13:30','20210102 15:40'),
+('B',10,'2021-3-10','20210102 13:30','20210102 15:40');
 
 insert into meeting_to_do_list (meeting_id,to_do_list)
 values (1,'discuss project'),
@@ -134,69 +147,81 @@ values (1,1),
 (4,10);
 
 insert into thesis (student_id,title,deadline,pdf_doc,total_grade)
-values (1,'student 1 thesis','2022-6-26','pdf 1',100),
-(23,'student 2 thesis','2022-6-26','pdf 1',80),
-(24,'student 3 thesis','2022-7-4','pdf 1',80),
-(25,'student 4 thesis','2022-3-29','pdf 1',75);
+values (1,'Mechanical Uses','2022-6-26','pdf 1',100),
+(23,'Mechanical Uses','2022-6-26','pdf 1',80),
+(24,'Mechanical Uses','2022-7-4','pdf 1',80),
+(25,'Mechanical Uses','2022-3-29','pdf 1',75),
+(26, 'Study on X' , '2022-4-7', 'pdf 3', 78),
+(27, 'Study on X' , '2022-6-9', 'pdf 3', 100),
+(28, 'Study on X' , '2022-9-4', 'pdf 2', 67),
+(29, 'Study on X' , '2022-2-5', 'pdf 4', 90);
 
-insert into defense(student_id,defense_location,defense_time,defense_date,total_grade)
-values (1,'s334','12:00','2022-3-12',65),
-(23,'m201','13:00','2022-6-12',72),
-(24,'m333','13:00','2023-1-5',89),
-(25,'s112','15:00','2022-4-23',92);
+
+insert into defense(student_id,defense_location,content,defense_time,defense_date,total_grade)
+values (1,'s334','content of the first defense', '12:00','2022-3-12',65),
+(23,'m201','13:00','content of the second defense','2022-6-12',72),
+(24,'m333','13:00','content of the third defense','2023-1-5',89),
+(25,'s112','15:00','content of the fourth defense','2022-4-23',92),
+(26, 's334','15:00','content of the fifth defense', '2022-4-7', 78),
+(27, 's432' ,'14:00','content of the sixth defense', '2022-6-9', 100),
+(28, 'm503' ,'8:00','content of the seventh defense', '2022-9-4', 67),
+(29, 'm205' ,'9:30', 'content of the eighth defense','2022-2-5', 90);
 
 insert into progress_report(student_id,content,updating_user_id,progress_report_date,grade)
 values (1,'math quiz 2',3,'2022-9-7',72),
 (23,'company report',7,'2023-4-7',23),
 (24,'os midterm',9,'2022-12-14',55),
-(25,'caterers report',13,'2022-12-17',80);
+(25,'caterers report',13,'2022-12-17',80),
+(26, 'java code' ,3, '2022-4-7', 78),
+(27, 'revision' ,7, '2022-6-9', 100),
+(28, 'A+ addition' ,9, '2022-9-4', 67),
+(29, 'grade evaluation' ,13, '2022-2-5', 90);
 
 insert into grade_industrial_progress_report(lecturer_id,content,company_id,student_id,lecturer_grade,progress_report_date,company_grade)
-values (3,'cs 2 report',7,1,89,'2022-9-7',100),
-(8,'math  report',11,23,65,'2023-9-23',90),
-(9,'databases report',12,24,70,'2022-12-4',65),
+values (3,'cs 2 report',7,1,89,'2022-9-7',100), 
+(8,'math  report',11,23,65,'2023-4-7',90), 
+(9,'databases report',12,24,70,'2022-12-14',65),
 (10,'physics 2 report',13,25,89,'2022-12-17',75);
 
 insert into grade_industrial_thesis(company_id, staff_id, student_id, title, company_grade, staff_grade)
 values
-(7
+(7,34,1,'Mechanical Uses', 85, 90),
+(11,35,23,'Mechanical Uses', 80, 86),
+(12,36,24,'Mechanical Uses', 78, 75),
+(13,37,25,'Mechanical Uses', 97, 90);
 
-   company_id INTEGER,
-    staff_id INTEGER,
-    student_id INTEGER,
-    title varchar(20),
-    company_grade INTEGER,
-    staff_grade INTEGER,
-    PRIMARY KEY (student_id, title),
-    FOREIGN KEY (company_id) REFERENCES company(company_id) ,
-    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (student_id, title) REFERENCES thesis(student_id, title)
 
 insert into grade_academic_progress_report(lecturer_id,student_id,lecturer_grade,progress_report_date)
-values (3,1,89,'2022-9-8'),
-(8,23,18,'2023-8-30'),
-(9,24,100,'2022-12-4'),
-(10,25,89,'2022-12-17');
+values (3,26,89,'2022-4-7'),
+(8,27,18,'2022-6-9'),
+(9,28,100,'2022-9-4'),
+(10,29,89,'2022-2-5');
+
+
+
 
 insert into grade_academic_thesis(lecturer_id,external_examiner_id,student_id,title,lecturer_grade,external_examiner_grade)
-values (3,6,1,'The effects of Tech on Industries',89,76),
-(8,14,23,'Numerical Integration Applications',18,93),
-(9,15,24,'Operating Systems: A Simpler Outlook',100,97),
-(10,16,25,'Numerical Differentiation Using Java',89,90);
+values (3,6,26,'Study on X',89,76),
+(8,14,27,'Study on X',18,93),
+(9,15,28,'Study on X',100,97),
+(10,16,29,'Study on X',89,90);
+
+
 
 insert into grade_academic_defense(lecturer_id,external_examiner_id,student_id,defense_location,lecturer_grade,external_examiner_grade)
-values (3,6,1,'s334',89,76),
-(8,14,23,'m201',18,93),
-(9,15,24,'m333',100,97),
-(10,16,25,'s112',89,90);
+values (3,6,26,'s334',89,76),
+(8,14,27,'s432',18,93),
+(9,15,28,'m503',100,97),
+(10,16,29,'m205',89,90);
 
 
 insert into grade_industrial_defense(company_id,staff_id,student_id,defense_location,company_grade,employee_grade)
 values (7,34,1,'s334',100,32),
 (11,35,23,'m201',90,89),
 (12,36,24,'m333',65,90),
-(13,37,25,'s112',75);
+(13,37,25,'s112',75,87);
+
+
 
 insert into lecturer_recommend_external_examiner(lecturer_id,external_examiner_id,project_code)
 values (3,6,3222),
@@ -208,10 +233,15 @@ insert into student_preferences(student_id,preference_number,project_code)
 values (1,78,3425),
 (23,69,6272),
 (24,88,9289),
-(25,67,2323);
+(25,67,2323),
+(26,33,5555);
 
 insert into major_has_bachelor_project(major_code,project_code)
 values(123,3425),
 (124,6272),
 (125,9289),
-(126,2323);
+(126,2323),
+(123, 5555),
+(124,3343),
+(125, 5655),
+(126,3933);

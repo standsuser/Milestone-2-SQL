@@ -47,7 +47,7 @@ CREATE TABLE employee(
     phone VARCHAR(20),
     PRIMARY KEY (staff_id, company_id),
     FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE (username)
+    UNIQUE (username, email)
 );
 
 CREATE TABLE external_examiner(
@@ -87,6 +87,13 @@ CREATE TABLE major(
 );
 
 
+CREATE TABLE bachelor_project(
+    code INTEGER,
+    project_name VARCHAR(20),
+    submitted_materials VARCHAR(100),/*should we keep this even tho theres a submitted materials table*/
+    pdescription VARCHAR(100) PRIMARY KEY (code)
+);
+
 CREATE TABLE student(
     student_id INTEGER,
     first_name VARCHAR(15),
@@ -97,18 +104,14 @@ CREATE TABLE student(
     age AS (YEAR(CURRENT_TIMESTAMP) - YEAR(date_of_birth)),
     semester INTEGER,
     gpa DECIMAL,
+    TotalBachelorGrade DECIMAL(4,2),
+    Assigned_Project_Code INTEGER,
     /*total_bachelor_grade AS((0.3*thesis.total_grade)+(0.3*defense.total_grade)+ (0.4*comulative_progress_report_grade)),
      comulative_progress_report_grade AS AVG(progress_report.grade), recheck grade odam*/
     PRIMARY KEY (student_id),
     FOREIGN KEY (student_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
-    FOREIGN KEY (major_code) REFERENCES major(major_code) 
-);
-
-CREATE TABLE bachelor_project(
-    code INTEGER,
-    project_name VARCHAR(20),
-    submitted_materials VARCHAR(100),
-    pdescription VARCHAR(100) PRIMARY KEY (code)
+    FOREIGN KEY (major_code) REFERENCES major(major_code),
+    FOREIGN KEY (Assigned_Project_Code) REFERENCES bachelor_project(code)
 );
 
 CREATE TABLE bachelor_submitted_materials(
@@ -127,7 +130,8 @@ CREATE TABLE academic(
     PRIMARY KEY (academic_code),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
     FOREIGN KEY (teaching_assistant_id) REFERENCES teaching_assistant(teaching_assistant_id) ,
-    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) 
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) ,
+    FOREIGN KEY (academic_code) REFERENCES bachelor_project(code)
 );
 
 CREATE TABLE industrial(
@@ -140,16 +144,17 @@ CREATE TABLE industrial(
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
     FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
     FOREIGN KEY (company_id) REFERENCES company(company_id) ,
+    FOREIGN KEY (industrial_code) REFERENCES bachelor_project(code)
 );
 
 CREATE TABLE meeting(
     meeting_id INTEGER IDENTITY,
-    meeting_point VARCHAR(20),
+    meeting_point VARCHAR(5),
     lecturer_id INTEGER,
     meeting_date DATE,
-    start_time TIME,
-    end_time TIME,
-    /*duration as (end_time)-(start_time), how to do it */
+    start_time DATETIME,
+    end_time DATETIME,
+    duration as datediff(mi,end_time,start_time),
     PRIMARY KEY (meeting_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -166,7 +171,7 @@ CREATE TABLE meeting(
 CREATE TABLE meeting_to_do_list(
     meeting_id INTEGER,
     to_do_list VARCHAR(200),
-    PRIMARY KEY (meeting_id),
+    PRIMARY KEY (meeting_id, to_do_list),
     FOREIGN KEY (meeting_id) REFERENCES meeting(meeting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 /*-----------------------------*/
@@ -182,7 +187,7 @@ CREATE TABLE thesis(
     student_id INTEGER,
     title varchar(20),
     deadline datetime,
-    pdf_doc varchar(200),
+    pdf_doc varchar(1000),
     total_grade INTEGER,
     PRIMARY KEY (student_id, title),
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -194,6 +199,7 @@ CREATE TABLE thesis(
 CREATE TABLE defense(
     student_id INTEGER,
     defense_location varchar(20),
+    content varchar(1000),
     defense_time TIME,
     defense_date DATETIME,
     total_grade INTEGER,
@@ -206,7 +212,7 @@ CREATE TABLE defense(
 
 CREATE TABLE progress_report(
     student_id INTEGER,
-    content varchar(20),
+    content varchar(1000),
     updating_user_id INTEGER,
     progress_report_date datetime,
     grade INTEGER,
