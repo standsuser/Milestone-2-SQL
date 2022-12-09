@@ -139,3 +139,4 @@ CREATE PROC ViewProfile
 @user_id int
 as
 select * from users where @user_id = users_id
+--drop proc ViewProfile
