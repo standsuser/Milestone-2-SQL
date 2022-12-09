@@ -158,7 +158,8 @@ values (3,'cs 2 report',7,1,89,'2022-9-7',100),
 (10,'physics 2 report',13,25,89,'2022-12-17',75);
 
 insert into grade_industrial_thesis(company_id, staff_id, student_id, title, company_grade, staff_grade)
-values (
+values
+(7
 
    company_id INTEGER,
     staff_id INTEGER,
