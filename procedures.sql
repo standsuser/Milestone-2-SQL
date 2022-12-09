@@ -19,7 +19,6 @@ CREATE PROC UserRegister /*figure out how to return password and user_id and als
 @users_id int output,
 @password varchar(10) output
 /* is this correct? should anything be not null should it be specific with nested ifs? or general?*/
-
 AS
 IF @usertype IS NULL or @username IS NULL or @email IS NULL 
 print 'One of the main inputs is null'
@@ -43,6 +42,8 @@ INSERT INTO student(first_name, last_name, major_code, date_of_birth,adress, sem
     VALUES(@first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
    set @users_id = (select max(users_id) from users)
    set @password = (select max(users_id) from users)
+    insert into users(user_password)
+    values (@password)
 END
 IF @usertype = 'company' AND
  (@company_name IS NULL or 
@@ -62,6 +63,8 @@ INSERT INTO company(company_name, representative_name, representative_email, com
 
    set @users_id = (select max(users_id) from users)
    set @password = (select max(users_id) from users)
+    insert into users(user_password)
+    values (@password)
 END
 IF @usertype = 'teaching_assistant' 
 BEGIN

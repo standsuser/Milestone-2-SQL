@@ -10,7 +10,7 @@ CREATE TABLE users (
     phone_number VARCHAR(20),
     PRIMARY KEY (users_id),
     UNIQUE (username, email)
-); /*DO WE ADD PRIMARY KEY IDS FOR USER OURSELVES IN INSERT OR LET IT BE AUTOMATICALLY GENERATED?*/
+); 
 
 CREATE TABLE lecturer (
     lecturer_id INTEGER,
@@ -21,8 +21,7 @@ CREATE TABLE lecturer (
 
 CREATE TABLE lecturer_fields (
     lecturer_id INTEGER,
-    fields VARCHAR(10),
-    /*multivalued should it be different?*/
+    fields VARCHAR(20),
     PRIMARY KEY(lecturer_id, fields),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -31,8 +30,8 @@ CREATE TABLE lecturer_fields (
 CREATE TABLE company (
     company_id INTEGER,
     company_name VARCHAR(20),
-    representative_name VARCHAR(10),
-    representative_email VARCHAR(20),
+    representative_name VARCHAR(20),
+    representative_email VARCHAR(50),
     company_location VARCHAR(50),
     PRIMARY KEY(company_id),
     FOREIGN KEY (company_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -73,7 +72,7 @@ CREATE TABLE coordinator(
 
 CREATE TABLE faculty(
     faculty_code INTEGER,
-    name VARCHAR(20),
+    faculty_name VARCHAR(20),
     dean INTEGER,
     PRIMARY KEY (faculty_code),
     FOREIGN KEY (dean) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -109,9 +108,9 @@ CREATE TABLE student(
 
 CREATE TABLE bachelor_project(
     code INTEGER,
-    name VARCHAR(20),
+    project_name VARCHAR(20),
     submitted_materials VARCHAR(100),
-    description VARCHAR(100) PRIMARY KEY (code)
+    pdescription VARCHAR(100) PRIMARY KEY (code)
 );
 
 CREATE TABLE bachelor_submitted_materials(
@@ -174,8 +173,8 @@ CREATE TABLE meeting_to_do_list(
 );
 
 CREATE TABLE meeting_attendents(
-    meeting_id INTEGER,
-    attendant_id INTEGER,
+    meeting_id INTEGER ,
+    attendant_id INTEGER IDENTITY,
     PRIMARY KEY (attendant_id, meeting_id),
     FOREIGN KEY (meeting_id) REFERENCES meeting(meeting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -330,5 +329,3 @@ CREATE TABLE major_has_bachelor_project(
     FOREIGN KEY (project_code) REFERENCES bachelor_project(code) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
-/* update notes: spelling mistakes and main errors fixed. entities tables are created
- BUT relation tables foreign keys have error issues when ran separately and aren't created */
