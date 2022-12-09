@@ -115,6 +115,27 @@ ELSE IF @usertype = 'coordinator'
 END
 GO
 
+CREATE PROC UserLogin
+@email VARCHAR(50),
+@password VARCHAR(10),
+@success bit output,
+@user_id int output
+as 
+declare @tmp_id INT
+IF EXISTS(SELECT @tmp_id as users_id  FROM users WHERE email = @email and user_password = @password)
+    BEGIN 
 
+        SET @success = 1
+        SET @user_id = @tmp_id
+    END
+ELSE 
+    SET @success = 0
+    SET @user_id = -1
 
-/*hit women ;) */
+    --DROP PROC UserLogin
+GO
+
+CREATE PROC ViewProfile
+@user_id int
+as
+select * from users where @user_id = users_id
