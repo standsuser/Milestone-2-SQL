@@ -88,10 +88,11 @@ CREATE TABLE major(
 
 
 CREATE TABLE bachelor_project(
-    code INTEGER,
+    code INTEGER IDENTITY,
     project_name VARCHAR(20),
     submitted_materials VARCHAR(100),/*should we keep this even tho theres a submitted materials table*/
-    pdescription VARCHAR(100) PRIMARY KEY (code)
+    pdescription VARCHAR(100),
+    PRIMARY KEY (code)
 );
 
 CREATE TABLE student(
@@ -154,27 +155,20 @@ CREATE TABLE meeting(
     meeting_date DATE,
     start_time DATETIME,
     end_time DATETIME,
-    duration as datediff(mi,end_time,start_time),
+    duration as datediff(mi,start_time,end_time),
     PRIMARY KEY (meeting_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-/*
- SELECT TIME(end_time - start_time)
- AS total_time 
- from meeting
- 
- alter table the_table
- add column total_time time null;
- 
- update the table set total_time = unload_time - record_time;*/
+
 CREATE TABLE meeting_to_do_list(
     meeting_id INTEGER,
     to_do_list VARCHAR(200),
     PRIMARY KEY (meeting_id, to_do_list),
     FOREIGN KEY (meeting_id) REFERENCES meeting(meeting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-/*-----------------------------*/
+
+
 CREATE TABLE meeting_attendents(
     meeting_id INTEGER ,
     attendant_id INTEGER,
@@ -229,7 +223,6 @@ CREATE TABLE grade_industrial_progress_report (
     company_id INTEGER,
     student_id INTEGER,
     lecturer_grade INTEGER,
-    content varchar(20),
     progress_report_date datetime,
     company_grade INTEGER,
     PRIMARY KEY (student_id, progress_report_date),
@@ -244,7 +237,7 @@ CREATE TABLE grade_academic_progress_report (
     student_id INTEGER,
     lecturer_grade INTEGER,
     progress_report_date datetime,
-    PRIMARY KEY (progress_report_date, lecturer_id, student_id),
+    PRIMARY KEY (progress_report_date, student_id),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ,
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
     FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id) ,
@@ -257,7 +250,7 @@ CREATE TABLE grade_academic_thesis (
     title varchar(20),
     lecturer_grade INTEGER,
     external_examiner_grade INTEGER,
-    PRIMARY KEY (student_id, lecturer_id, title),
+    PRIMARY KEY (student_id, title),
     FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) , /*on delete cascade error if both keys have on delete cascade but only one works*/
     FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id),
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,

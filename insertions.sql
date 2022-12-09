@@ -84,44 +84,44 @@ values(123,'software eng',70),
 (125,'Clinical psychology',72),
 (126,'mechanical eng',73);
 
-insert into student(student_id,first_name,last_name,major_code,date_of_birth,adress,semester,gpa)
-values(1,'ahmed','mazen',123,'2003-12-12','cairo',4,2.3), 
-(23,'haytham','amro',123,'2004-06-05','cairo',2,2.3),
-(24,'ayman','shady',124,'2002-09-13','cairo',6,3),
-(25,'habiba','magdy',126,'2000-01-01','cairo',8,4.2),
-(26,'mariam','mohamed',123,'2003-09-14','cairo',3,0.7),
-(27,'mohamed','mohamed',124,'2002-03-03','cairo',4,4),
-(28,'hana','ahmed',125,'2002-03-04','cairo',6,3),
-(29,'marwan','mohamed',126,'2003-11-30','cairo',2,1.2);
+insert into bachelor_project(project_name,submitted_materials,pdescription)
+values('Cybersecurity','part one','project for security'),
+('Product Management','last part','business bachelor project'),
+('Data Science','part three','informatics and computer science '),
+('Design Projects','design two','illusions designs'),
+('Business','part one','project for business'),
+('Management','fifth part','business bachelor project'),
+('Databases ','part three','informatics and computer science '),
+('Design Project 1','design three','illusions designs');
 
+insert into student(student_id,first_name,last_name,major_code,date_of_birth,adress,semester,gpa, TotalBachelorGrade, Assigned_Project_Code )
+values(1,'ahmed','mazen',123,'2003-12-12','cairo',4,2.3,74,1), 
+(23,'haytham','amro',123,'2004-06-05','cairo',2,2.3,89,2),
+(24,'ayman','shady',124,'2002-09-13','cairo',6,3,78,3),
+(25,'habiba','magdy',126,'2000-01-01','cairo',8,4.2,68,4),
+(26,'mariam','mohamed',123,'2003-09-14','cairo',3,0.7,93,5),
+(27,'mohamed','mohamed',124,'2002-03-03','cairo',4,4,89,6),
+(28,'hana','ahmed',125,'2002-03-04','cairo',6,3,92,7),
+(29,'marwan','mohamed',126,'2003-11-30','cairo',2,1.2,93,8);
 
-insert into bachelor_project(code,project_name,submitted_materials,pdescription)
-values(3425,'Cybersecurity','part one','project for security'),
-(6272,'Product Management','last part','business bachelor project'),
-(9289,'Data Science','part three','informatics and computer science '),
-(2323,'Design Projects','design two','illusions designs'),
-(5555,'Business','part one','project for business'),
-(3343,'Management','fifth part','business bachelor project'),
-(5655,'Databases ','part three','informatics and computer science '),
-(3933,'Design Project 1','design three','illusions designs');
 
 insert into bachelor_submitted_materials(code,material)
-values(3425,'java code'),
-(6272,'managment file'),
-(9289,'SQL code'),
-(2323,'markers and paints');
+values(1,'java code'),
+(2,'managment file'),
+(3,'SQL code'),
+(4,'markers and paints');
 
 insert into academic(academic_code,lecturer_id,teaching_assistant_id,external_examiner_id)
-values (3222,3,2,6),
-(3883,8,17,14),
-(3729,9,18,15),
-(3628,10,19,16);
+values (5,3,2,6),
+(6,8,17,14),
+(7,9,18,15),
+(8,10,19,16);
 
 insert into industrial(industrial_code,company_id,lecturer_id,staff_id)
-values (90,7,3,34),
-(91,11,8,35),
-(92,12,9,36),
-(93,13,10,37);
+values (1,7,3,34),
+(2,11,8,35),
+(3,12,9,36),
+(4,13,10,37);
 
 
 insert into meeting(meeting_point,lecturer_id,meeting_date,start_time,end_time)
@@ -157,8 +157,8 @@ values (1,'Mechanical Uses','2022-6-26','pdf 1',100),
 (29, 'Study on X' , '2022-2-5', 'pdf 4', 90);
 
 
-insert into defense(student_id,defense_location,content,defense_time,defense_date,total_grade)
-values (1,'s334','content of the first defense', '12:00','2022-3-12',65),
+insert into defense(student_id,defense_location,defense_time,content,defense_date,total_grade)
+values (1,'s334','12:00','content of the first defense', '2022-3-12',65),
 (23,'m201','13:00','content of the second defense','2022-6-12',72),
 (24,'m333','13:00','content of the third defense','2023-1-5',89),
 (25,'s112','15:00','content of the fourth defense','2022-4-23',92),
@@ -177,11 +177,11 @@ values (1,'math quiz 2',3,'2022-9-7',72),
 (28, 'A+ addition' ,9, '2022-9-4', 67),
 (29, 'grade evaluation' ,13, '2022-2-5', 90);
 
-insert into grade_industrial_progress_report(lecturer_id,content,company_id,student_id,lecturer_grade,progress_report_date,company_grade)
-values (3,'cs 2 report',7,1,89,'2022-9-7',100), 
-(8,'math  report',11,23,65,'2023-4-7',90), 
-(9,'databases report',12,24,70,'2022-12-14',65),
-(10,'physics 2 report',13,25,89,'2022-12-17',75);
+insert into grade_industrial_progress_report(lecturer_id,company_id,student_id,lecturer_grade,progress_report_date,company_grade)
+values (3,7,1,89,'2022-9-7',100), 
+(8,11,23,65,'2023-4-7',90), 
+(9,12,24,70,'2022-12-14',65),
+(10,13,25,89,'2022-12-17',75);
 
 insert into grade_industrial_thesis(company_id, staff_id, student_id, title, company_grade, staff_grade)
 values
@@ -224,24 +224,24 @@ values (7,34,1,'s334',100,32),
 
 
 insert into lecturer_recommend_external_examiner(lecturer_id,external_examiner_id,project_code)
-values (3,6,3222),
-(8,14,3883),
-(9,15,3729),
-(10,16,3628);
+values (3,6,8),
+(8,14,5),
+(9,15,6),
+(10,16,7);
 
 insert into student_preferences(student_id,preference_number,project_code)
-values (1,78,3425),
-(23,69,6272),
-(24,88,9289),
-(25,67,2323),
-(26,33,5555);
+values (1,78,5),
+(23,69,4),
+(24,88,7),
+(25,67,8),
+(26,33,2);
 
 insert into major_has_bachelor_project(major_code,project_code)
-values(123,3425),
-(124,6272),
-(125,9289),
-(126,2323),
-(123, 5555),
-(124,3343),
-(125, 5655),
-(126,3933);
+values(123,1),
+(124,2),
+(125,3),
+(126,4),
+(123, 5),
+(124,6),
+(125, 7),
+(126,8);
