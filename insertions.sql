@@ -157,6 +157,21 @@ values (3,'cs 2 report',7,1,89,'2022-9-7',100),
 (9,'databases report',12,24,70,'2022-12-4',65),
 (10,'physics 2 report',13,25,89,'2022-12-17',75);
 
+insert into grade_industrial_thesis(company_id, staff_id, student_id, title, company_grade, staff_grade)
+values (
+
+   company_id INTEGER,
+    staff_id INTEGER,
+    student_id INTEGER,
+    title varchar(20),
+    company_grade INTEGER,
+    staff_grade INTEGER,
+    PRIMARY KEY (student_id, title),
+    FOREIGN KEY (company_id) REFERENCES company(company_id) ,
+    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (student_id, title) REFERENCES thesis(student_id, title)
+
 insert into grade_academic_progress_report(lecturer_id,student_id,lecturer_grade,progress_report_date)
 values (3,1,89,'2022-9-8'),
 (8,23,18,'2023-8-30'),
