@@ -142,6 +142,7 @@ CREATE TABLE industrial(
     FOREIGN KEY (company_id) REFERENCES company(company_id) ,
 );
 
+
 CREATE TABLE meeting(
     meeting_id INTEGER IDENTITY,
     meeting_point VARCHAR(20),
@@ -194,6 +195,7 @@ CREATE TABLE thesis(
 CREATE TABLE defense(
     student_id INTEGER,
     defense_location varchar(20),
+    defense_content varchar(1000),
     defense_time TIME,
     defense_date DATETIME,
     total_grade INTEGER,

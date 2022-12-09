@@ -166,11 +166,43 @@ begin
 select * from academic where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
 end
 go
+--start of task 3
 
 CREATE PROC MakePreferencesLocalProject
 @student_id int,
 @title varchar(50),
 @preference_number int
 as
+insert into student_preferences(student_id, preference_number, project_code)
+    values (@student_id, @title, @preference_number)
 
-alter table student_preferences set preference_number = @preference_number
+go
+
+/*CREATE PROC ViewMyThesis
+@student_id int,
+@title varchar(50)
+as
+ALTER TABLE thesis
+ADD total_bachelor_grade decimal ;
+
+begin
+
+go */
+CREATE PROC SubmitMyThesis
+@student_id int,
+@title varchar(50),
+@pdf_doc varchar(1000)
+as
+insert into thesis(student_id, title, pdf_doc)
+    values (@student_id, @title, @pdf_doc)
+
+go
+
+CREATE PROC UpdateMyDefense
+@student_id int,
+@defense_content varchar(1000)
+as
+insert into defense(student_id, defense_content) values (@student_id, @defense_content)
+
+go
+
