@@ -24,7 +24,7 @@ IF @usertype IS NULL or @username IS NULL or @email IS NULL
 print 'One of the main inputs is null'
 
 
-IF @usertype = 'student' AND
+IF @usertype = 'Students' AND
  (@first_name IS NULL or 
     @last_name IS NULL or 
     @major_code IS NULL or 
@@ -34,7 +34,7 @@ IF @usertype = 'student' AND
     @gpa IS NULL)
 
 print 'One of the student values is null'
-ELSE IF @usertype = 'student'
+ELSE IF @usertype = 'Students'
 BEGIN 
 INSERT INTO users(user_role, username, email)
     VALUES (@usertype , @username , @email)
@@ -45,7 +45,7 @@ INSERT INTO student(first_name, last_name, major_code, date_of_birth,adress, sem
     insert into users(user_password)
     values (@password)
 END
-IF @usertype = 'company' AND
+IF @usertype = 'Companies' AND
  (@company_name IS NULL or 
 @representative_name IS NULL or 
 @representative_email IS NULL or 
@@ -53,7 +53,7 @@ IF @usertype = 'company' AND
 
     print 'One of the company values is null' 
 
-ELSE IF @usertype = 'company'
+ELSE IF @usertype = 'Companies'
 
 BEGIN
 INSERT INTO users(user_role, username, email)
@@ -66,11 +66,11 @@ INSERT INTO company(company_name, representative_name, representative_email, com
     insert into users(user_password)
     values (@password)
 END
-IF @usertype = 'teaching_assistant' and @username is null or @email is null or @usertype is null or  @phone_number is null
+IF @usertype = 'Teaching assistants' and @username is null or @email is null or @usertype is null or  @phone_number is null
 
     print 'One of the TA values is null'
 
-ELSE IF @usertype = 'teaching_assistant'
+ELSE IF @usertype = 'Teaching assistants'
 BEGIN
  INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
@@ -83,11 +83,11 @@ BEGIN
 
 
 END
-IF @usertype = 'external_examiner' and @username is null or @email is null or @usertype is null or  @phone_number is null
+IF @usertype = 'External examiners' and @username is null or @email is null or @usertype is null or  @phone_number is null
 
     print 'One of the external_examiner values is null'
 
-ELSE IF @usertype = 'external_examiner'
+ELSE IF @usertype = 'External examiners'
 BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
         VALUES (@username, @email, @usertype, @phone_number)
@@ -98,11 +98,11 @@ BEGIN
     INSERT INTO users(user_password)
         VALUES (@password)
 END
-IF @usertype = 'coordinator' and @username is null or @email is null or @usertype is null or  @phone_number is null
+IF @usertype = 'Coordinators' and @username is null or @email is null or @usertype is null or  @phone_number is null
 
     print 'One of the coordinator values is null'
 
-ELSE IF @usertype = 'coordinator'
+ELSE IF @usertype = 'Coordinators'
     BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
@@ -139,4 +139,38 @@ CREATE PROC ViewProfile
 @user_id int
 as
 select * from users where @user_id = users_id
---drop proc ViewProfile
+go
+
+CREATE PROC ViewBachelorProjects
+@user_id int,
+@project_type varchar(20)
+as
+if @user_id is null and @project_type is null
+begin
+select * from bachelor_project
+select * from academic
+select * from industrial
+end
+else
+if @project_type is null
+begin 
+select * from academic where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
+select * from industrial where @user_id = lecturer_id or @user_id = staff_id or @user_id = company_id
+end
+else if @project_type = 'industrial'
+begin 
+select * from industrial where @user_id = lecturer_id or @user_id = staff_id or @user_id = company_id
+end
+else if @project_type = 'academic'
+begin
+select * from academic where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
+end
+go
+
+CREATE PROC MakePreferencesLocalProject
+@student_id int,
+@title varchar(50),
+@preference_number int
+as
+
+alter table student_preferences set preference_number = @preference_number
