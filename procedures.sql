@@ -51,7 +51,7 @@ IF @usertype = 'company' AND
 @representative_email IS NULL or 
 @address IS NULL)  /*is location of company the address?*/
 
-print 'One of the company values is null' 
+    print 'One of the company values is null' 
 
 ELSE IF @usertype = 'company'
 
@@ -66,7 +66,11 @@ INSERT INTO company(company_name, representative_name, representative_email, com
     insert into users(user_password)
     values (@password)
 END
-IF @usertype = 'teaching_assistant' 
+IF @usertype = 'teaching_assistant' and @username is null or @email is null or @usertype is null or  @phone_number is null
+
+    print 'One of the TA values is null'
+
+ELSE IF @usertype = 'teaching_assistant'
 BEGIN
  INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
@@ -79,7 +83,11 @@ BEGIN
 
 
 END
-IF @usertype = 'external_examiner'
+IF @usertype = 'external_examiner' and @username is null or @email is null or @usertype is null or  @phone_number is null
+
+    print 'One of the external_examiner values is null'
+
+ELSE IF @usertype = 'external_examiner'
 BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
         VALUES (@username, @email, @usertype, @phone_number)
@@ -90,7 +98,11 @@ BEGIN
     INSERT INTO users(user_password)
         VALUES (@password)
 END
-IF @usertype = 'coordinator'
+IF @usertype = 'coordinator' and @username is null or @email is null or @usertype is null or  @phone_number is null
+
+    print 'One of the coordinator values is null'
+
+ELSE IF @usertype = 'coordinator'
     BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
@@ -103,7 +115,6 @@ IF @usertype = 'coordinator'
 END
 GO
 
-CREATE PROC AddEmployee @company_id int, @email VARCHAR(50), @name VARCHAR(20), @phone_number VARCHAR(20), @field VARCHAR(25)
-AS
+
 
 /*hit women ;) */
