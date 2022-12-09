@@ -110,57 +110,64 @@ values (90,7,3,34),
 (91,11,8,35),
 (92,12,9,36),
 (93,13,10,37);
-
+/*-----------------------------*/
 insert into meeting(meeting_point,lecturer_id,meeting_date,start_time,end_time)
 values ('point B',3,'2021-1-2','13:30','15:40'),
 ('point B',8,'2021-1-2','13:30','15:40'),
 ('point B',9,'2021-2-1','13:30','15:40'),
 ('point B',10,'2021-3-10','13:30','15:40');
 
-insert into meeting_to_do_list (meeting_id,attendant_id)
-values (1,73),
-(2,74),
-(3,75),
-(4,76);
+insert into meeting_to_do_list (meeting_id,to_do_list)
+values (1,'discuss project'),
+(2,'troubleshoot code'),
+(3,'plan outline'),
+(4,'discuss grading scheme');
 
 insert into meeting_attendents(meeting_id ,attendant_id )
-values (1
+values (1,1),
+(1,3),
+(2,8),
+(2,23),
+(3,24),
+(3,9),
+(4,25),
+(4,10);
 
 insert into thesis (student_id,title,deadline,pdf_doc,total_grade)
-values (1,'student 1 thesis',26/6/2022,'pdf 1',100),
-(23,'student 2 thesis',26/6/2022,'pdf 1',80),
-(24,'student 3 thesis',26/6/2022,'pdf 1',80),
-(25,'student 4 thesis',26/6/2022,'pdf 1',75);
+values (1,'student 1 thesis','2022-6-26','pdf 1',100),
+(23,'student 2 thesis','2022-6-26','pdf 1',80),
+(24,'student 3 thesis','2022-7-4','pdf 1',80),
+(25,'student 4 thesis','2022-3-29','pdf 1',75);
 
 insert into defense(student_id,defense_location,defense_time,defense_date,total_grade)
-values (1,'s334','12:00',12/03/2019,65),
-(23,'m201','13:00',12/06/2021,72),
-(24,'m333','13:00',21/03/2020,89),
-(25,'s112','15:00',23/03/2019,92);
+values (1,'s334','12:00','2022-3-12',65),
+(23,'m201','13:00','2022-6-12',72),
+(24,'m333','13:00','2023-1-5',89),
+(25,'s112','15:00','2022-4-23',92);
 
 insert into progress_report(student_id,content,updating_user_id,progress_report_date,grade)
-values (1,'math quiz 2',3,7/09/2022,72),
-(23,'company report',7,23/09/2021,23),
-(24,'os midterm',9,4/12/2022,55),
-(25,'caterers report',13,17/12/2022,80);
+values (1,'math quiz 2',3,'2022-9-7',72),
+(23,'company report',7,'2023-4-7',23),
+(24,'os midterm',9,'2022-12-14',55),
+(25,'caterers report',13,'2022-12-17',80);
 
 insert into grade_industrial_progress_report(lecturer_id,content,company_id,student_id,lecturer_grade,progress_report_date,company_grade)
-values (3,'cs 2 report',7,1,89,7/09/2022,100),
-(23,'math  report',11,1,65,18,23/09/2021,90),
-(24,'databases report',12,1,100,4/12/2022,65),
-(25,'physics 2 report',13,1,89,17/12/2022,75);
+values (3,'cs 2 report',7,1,89,'2022-9-7',100),
+(8,'math  report',11,23,65,'2023-9-23',90),
+(9,'databases report',12,24,70,'2022-12-4',65),
+(10,'physics 2 report',13,25,89,'2022-12-17',75);
 
 insert into grade_academic_progress_report(lecturer_id,student_id,lecturer_grade,progress_report_date)
-values (3,1,89,7/09/2022),
-(8,23,18,23/09/2021),
-(9,24,100,4/12/2022),
-(10,25,89,17/12/2022);
+values (3,1,89,'2022-9-8'),
+(8,23,18,'2023-8-30'),
+(9,24,100,'2022-12-4'),
+(10,25,89,'2022-12-17');
 
 insert into grade_academic_thesis(lecturer_id,external_examiner_id,student_id,title,lecturer_grade,external_examiner_grade)
-values (3,6,1,'student 1 thesis',89,76),
-(8,14,23,'student 2 thesis',18,93),
-(9,15,24,'student 3 thesis',100,97),
-(10,16,25,'student 4 thesis',89,90);
+values (3,6,1,'The effects of Tech on Industries',89,76),
+(8,14,23,'Numerical Integration Applications',18,93),
+(9,15,24,'Operating Systems: A Simpler Outlook',100,97),
+(10,16,25,'Numerical Differentiation Using Java',89,90);
 
 insert into grade_academic_defense(lecturer_id,external_examiner_id,student_id,defense_location,lecturer_grade,external_examiner_grade)
 values (3,6,1,'s334',89,76),

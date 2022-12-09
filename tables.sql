@@ -86,7 +86,7 @@ CREATE TABLE major(
     FOREIGN KEY (faculty_code) REFERENCES faculty(faculty_code) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-/*------------------error begin-------------------*/
+
 CREATE TABLE student(
     student_id INTEGER,
     first_name VARCHAR(15),
@@ -97,13 +97,11 @@ CREATE TABLE student(
     age AS (YEAR(CURRENT_TIMESTAMP) - YEAR(date_of_birth)),
     semester INTEGER,
     gpa DECIMAL,
-    /*double doesnt work?*/
     /*total_bachelor_grade AS((0.3*thesis.total_grade)+(0.3*defense.total_grade)+ (0.4*comulative_progress_report_grade)),
      comulative_progress_report_grade AS AVG(progress_report.grade), recheck grade odam*/
     PRIMARY KEY (student_id),
-    FOREIGN KEY (student_id) REFERENCES users(users_id),
-    FOREIGN KEY (major_code) REFERENCES major(major_code)
-    /*i removed update cascades because it was causing an error revise what to type then*/
+    FOREIGN KEY (student_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (major_code) REFERENCES major(major_code) 
 );
 
 CREATE TABLE bachelor_project(
@@ -118,7 +116,7 @@ CREATE TABLE bachelor_submitted_materials(
     material VARCHAR(30),
     PRIMARY KEY (code),
     FOREIGN KEY (code) REFERENCES bachelor_project(code) ON DELETE CASCADE ON UPDATE CASCADE
-    /*eshme3na cascade hena doesnt cause error*/
+
 );
 
 CREATE TABLE academic(
@@ -127,9 +125,9 @@ CREATE TABLE academic(
     teaching_assistant_id INTEGER,
     external_examiner_id INTEGER,
     PRIMARY KEY (academic_code),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
-    FOREIGN KEY (teaching_assistant_id) REFERENCES teaching_assistant(teaching_assistant_id),
-    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id)
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (teaching_assistant_id) REFERENCES teaching_assistant(teaching_assistant_id) ,
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) 
 );
 
 CREATE TABLE industrial(
@@ -139,13 +137,13 @@ CREATE TABLE industrial(
     lecturer_id INTEGER,
     staff_id INTEGER,
     PRIMARY KEY (industrial_code),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
     FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
-    FOREIGN KEY (company_id) REFERENCES company(company_id),
+    FOREIGN KEY (company_id) REFERENCES company(company_id) ,
 );
 
 CREATE TABLE meeting(
-    meeting_id INTEGER,
+    meeting_id INTEGER IDENTITY,
     meeting_point VARCHAR(20),
     lecturer_id INTEGER,
     meeting_date DATE,
@@ -171,12 +169,13 @@ CREATE TABLE meeting_to_do_list(
     PRIMARY KEY (meeting_id),
     FOREIGN KEY (meeting_id) REFERENCES meeting(meeting_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
+/*-----------------------------*/
 CREATE TABLE meeting_attendents(
     meeting_id INTEGER ,
-    attendant_id INTEGER IDENTITY,
+    attendant_id INTEGER,
     PRIMARY KEY (attendant_id, meeting_id),
-    FOREIGN KEY (meeting_id) REFERENCES meeting(meeting_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (meeting_id) REFERENCES meeting(meeting_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (attendant_id) REFERENCES users(users_id) 
 );
 
 CREATE TABLE thesis(
@@ -199,7 +198,7 @@ CREATE TABLE defense(
     defense_date DATETIME,
     total_grade INTEGER,
     PRIMARY KEY (student_id, defense_location),
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE, 
     /*Where : Defense.Total_Grade = Calculated((GradeAcademicDefense.EE_grade +
      GradeAcademicDefense.Lecturer_grade)/2 or
      (GradeIndustrialDefense.Compay_grade+GradeIndustrialDefense.Employee_grade)/2*/
@@ -212,8 +211,8 @@ CREATE TABLE progress_report(
     progress_report_date datetime,
     grade INTEGER,
     PRIMARY KEY (progress_report_date, student_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (updating_user_id) REFERENCES users(users_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,/*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (updating_user_id) REFERENCES users(users_id) ,
     /*Where : ProgressReport.Grade = Calculated((GradeAcademicPR.LecGrade) or
      (GradeIndustrialPR.Company_grade+GradeAcademicPR.Lecturer_grade)/2)*/
 );
@@ -228,10 +227,10 @@ CREATE TABLE grade_industrial_progress_report (
     progress_report_date datetime,
     company_grade INTEGER,
     PRIMARY KEY (student_id, progress_report_date),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
-    FOREIGN KEY (company_id) REFERENCES company(Company_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id),
-    FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) , /*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (company_id) REFERENCES company(Company_id) ,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id) ,
 );
 
 CREATE TABLE grade_academic_progress_report (
@@ -240,9 +239,9 @@ CREATE TABLE grade_academic_progress_report (
     lecturer_grade INTEGER,
     progress_report_date datetime,
     PRIMARY KEY (progress_report_date, lecturer_id, student_id),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id),
-    FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (progress_report_date, student_id) REFERENCES progress_report(progress_report_date, student_id) ,
 );
 
 CREATE TABLE grade_academic_thesis (
@@ -253,9 +252,9 @@ CREATE TABLE grade_academic_thesis (
     lecturer_grade INTEGER,
     external_examiner_grade INTEGER,
     PRIMARY KEY (student_id, lecturer_id, title),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) , /*on delete cascade error if both keys have on delete cascade but only one works*/
     FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (student_id, title) REFERENCES thesis(student_id, title)
 );
 
@@ -267,9 +266,9 @@ CREATE TABLE grade_industrial_thesis(
     company_grade INTEGER,
     staff_grade INTEGER,
     PRIMARY KEY (student_id, title),
-    FOREIGN KEY (company_id) REFERENCES company(company_id),
+    FOREIGN KEY (company_id) REFERENCES company(company_id) ,
     FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (student_id, title) REFERENCES thesis(student_id, title)
 );
 
@@ -281,9 +280,9 @@ CREATE TABLE grade_academic_defense (
     lecturer_grade INTEGER,
     external_examiner_grade INTEGER,
     PRIMARY KEY (student_id, defense_location),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
-    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ,
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) ,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (student_id, defense_location) REFERENCES defense(student_id, defense_location),
 );
 
@@ -295,11 +294,10 @@ CREATE TABLE grade_industrial_defense (
     company_grade INTEGER,
     employee_grade INTEGER,
     PRIMARY KEY (student_id, defense_location),
-    FOREIGN KEY (company_id) REFERENCES company(company_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    /*SHOULD WE KEEP ON DELETE CASCADE ON UPDATE CASCADE WHY DOES IT WORK HERE ONLY*/
-    FOREIGN KEY (student_id, defense_location) REFERENCES defense(student_id, defense_location),
+    FOREIGN KEY (company_id) REFERENCES company(company_id) ,
+    FOREIGN KEY (staff_id, company_id) REFERENCES employee(staff_id, company_id) ,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE ON UPDATE CASCADE, /*on delete cascade error if both keys have on delete cascade but only one works*/
+    FOREIGN KEY (student_id, defense_location) REFERENCES defense(student_id, defense_location) ,
 );
 
 CREATE TABLE lecturer_recommend_external_examiner(
@@ -307,9 +305,9 @@ CREATE TABLE lecturer_recommend_external_examiner(
     external_examiner_id INTEGER,
     project_code INTEGER,
     PRIMARY KEY (external_examiner_id, project_code),
-    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id),
-    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id),
-    FOREIGN KEY (project_code) REFERENCES academic(academic_code),
+    FOREIGN KEY (lecturer_id) REFERENCES lecturer(lecturer_id) ,
+    FOREIGN KEY (external_examiner_id) REFERENCES external_examiner(external_examiner_id) ,
+    FOREIGN KEY (project_code) REFERENCES academic(academic_code) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 CREATE TABLE student_preferences(
@@ -317,8 +315,8 @@ CREATE TABLE student_preferences(
     preference_number INTEGER,
     project_code INTEGER,
     PRIMARY KEY (student_id, project_code),
-    FOREIGN KEY (student_id) REFERENCES student,
-    FOREIGN KEY (project_code) REFERENCES bachelor_project(code),
+    FOREIGN KEY (student_id) REFERENCES student ON DELETE CASCADE ON UPDATE CASCADE,/*on delete cascade NO error if both keys have on delete cascade WHY? HERE*/
+    FOREIGN KEY (project_code) REFERENCES bachelor_project(code) ON DELETE CASCADE ON UPDATE CASCADE,
 );
 
 CREATE TABLE major_has_bachelor_project(
