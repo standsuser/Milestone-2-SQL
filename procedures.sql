@@ -70,17 +70,36 @@ IF @usertype = 'teaching_assistant'
 BEGIN
  INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
+    SET @users_id = (SELECT max(users_id) FROM users)
+    SET @password = (SELECT max(users_id) FROM users)
+ INSERT INTO teaching_assistant(teaching_assistant_id)
+    VALUES (@users_id)
+ INSERT INTO users(user_password)
+    VALUES (@password)
+
 
 END
 IF @usertype = 'external_examiner'
-   BEGIN 
-   INSERT INTO users(username,email, user_role, phone_number)
-     VALUES (@username, @email, @usertype, @phone_number)
+BEGIN 
+    INSERT INTO users(username,email, user_role, phone_number)
+        VALUES (@username, @email, @usertype, @phone_number)
+    SET @users_id = (SELECT max(users_id) FROM users)
+    SET @password = (SELECT max(users_id) FROM users)
+    INSERT INTO external_examiner(external_examiner_id)
+        VALUES (@users_id)
+    INSERT INTO users(user_password)
+        VALUES (@password)
 END
 IF @usertype = 'coordinator'
     BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
+    SET @users_id = (SELECT max(users_id) FROM users)
+    SET @password = (SELECT max(users_id) FROM users)
+    INSERT INTO coordinator(coordinator_id)
+        VALUES (@users_id)
+    INSERT INTO users(user_password)
+        VALUES (@password)
 END
 GO
 
