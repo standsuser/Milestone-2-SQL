@@ -147,12 +147,12 @@ values (1,1),
 (4,10);
 
 insert into thesis (student_id,title,deadline,pdf_doc,total_grade)
-values (1,'Mechanical Uses','2022-6-26','pdf 1',100),
+values (1,'Mechanical Uses','2022-6-26','pdf 1',95.8),
 (23,'Mechanical Uses','2022-6-26','pdf 1',80),
 (24,'Mechanical Uses','2022-7-4','pdf 1',80),
 (25,'Mechanical Uses','2022-3-29','pdf 1',75),
 (26, 'Study on X' , '2022-4-7', 'pdf 3', 78),
-(27, 'Study on X' , '2022-6-9', 'pdf 3', 100),
+(27, 'Study on X' , '2022-6-9', 'pdf 3', 90),
 (28, 'Study on X' , '2022-9-4', 'pdf 2', 67),
 (29, 'Study on X' , '2022-2-5', 'pdf 4', 90);
 
@@ -163,7 +163,7 @@ values (1,'s334','12:00','content of the first defense', '2022-3-12',65),
 (24,'m333','13:00','content of the third defense','2023-1-5',89),
 (25,'s112','15:00','content of the fourth defense','2022-4-23',92),
 (26, 's334','15:00','content of the fifth defense', '2022-4-7', 78),
-(27, 's432' ,'14:00','content of the sixth defense', '2022-6-9', 100),
+(27, 's432' ,'14:00','content of the sixth defense', '2022-6-9', 94.3),
 (28, 'm503' ,'8:00','content of the seventh defense', '2022-9-4', 67),
 (29, 'm205' ,'9:30', 'content of the eighth defense','2022-2-5', 90);
 
@@ -173,12 +173,12 @@ values (1,'math quiz 2',3,'2022-9-7',72),
 (24,'os midterm',9,'2022-12-14',55),
 (25,'caterers report',13,'2022-12-17',80),
 (26, 'java code' ,3, '2022-4-7', 78),
-(27, 'revision' ,7, '2022-6-9', 100),
+(27, 'revision' ,7, '2022-6-9', 90),
 (28, 'A+ addition' ,9, '2022-9-4', 67),
 (29, 'grade evaluation' ,13, '2022-2-5', 90);
 
 insert into grade_industrial_progress_report(lecturer_id,company_id,student_id,lecturer_grade,progress_report_date,company_grade)
-values (3,7,1,89,'2022-9-7',100), 
+values (3,7,1,89,'2022-9-7',70), 
 (8,11,23,65,'2023-4-7',90), 
 (9,12,24,70,'2022-12-14',65),
 (10,13,25,89,'2022-12-17',75);
@@ -194,7 +194,7 @@ values
 insert into grade_academic_progress_report(lecturer_id,student_id,lecturer_grade,progress_report_date)
 values (3,26,89,'2022-4-7'),
 (8,27,18,'2022-6-9'),
-(9,28,100,'2022-9-4'),
+(9,28,90,'2022-9-4'),
 (10,29,89,'2022-2-5');
 
 
@@ -203,7 +203,7 @@ values (3,26,89,'2022-4-7'),
 insert into grade_academic_thesis(lecturer_id,external_examiner_id,student_id,title,lecturer_grade,external_examiner_grade)
 values (3,6,26,'Study on X',89,76),
 (8,14,27,'Study on X',18,93),
-(9,15,28,'Study on X',100,97),
+(9,15,28,'Study on X',99,97),
 (10,16,29,'Study on X',89,90);
 
 
@@ -211,12 +211,12 @@ values (3,6,26,'Study on X',89,76),
 insert into grade_academic_defense(lecturer_id,external_examiner_id,student_id,defense_location,lecturer_grade,external_examiner_grade)
 values (3,6,26,'s334',89,76),
 (8,14,27,'s432',18,93),
-(9,15,28,'m503',100,97),
+(9,15,28,'m503',98,97),
 (10,16,29,'m205',89,90);
 
 
 insert into grade_industrial_defense(company_id,staff_id,student_id,defense_location,company_grade,employee_grade)
-values (7,34,1,'s334',100,32),
+values (7,34,1,'s334',98,32),
 (11,35,23,'m201',90,89),
 (12,36,24,'m333',65,90),
 (13,37,25,'s112',75,87);

@@ -392,3 +392,75 @@ GO
 --EXEC ViewEE 
 --DROP PROC ViewEE
 
+
+CREATE PROC RecommendEE --5g
+@Lecturer_id int, 
+@proj_code varchar(10), 
+@EE_id int
+as
+INSERT into lecturer_recommend_external_examiner(lecturer_id ,external_examiner_id ,project_code )
+VALUES  (@Lecturer_id, @EE_id, @proj_code)
+GO
+
+--EXEC RecommendEE @Lecturer_id = 9 , @proj_code = 7, @EE_id =16
+
+CREATE PROC SuperviseIndustrial --5h
+@Lecturer_id int, 
+@proj_code varchar(10)
+AS
+
+IF EXISTS(select industrial_code from industrial where @proj_code = industrial_code) --very sus revise and test
+    BEGIN
+            UPDATE industrial
+            SET lecturer_id = @Lecturer_id
+            WHERE industrial_code= @proj_code 
+    END
+ELSE
+
+
+INSERT INTO industrial(industrial_code,lecturer_id)
+VALUES (@proj_code, @Lecturer_id)
+GO
+
+--EXEC SuperviseIndustrial @Lecturer_id = 3, @proj_code=2
+
+CREATE PROC LecGradeThesis --5i
+@Lecturer_id int, 
+@sid int, 
+@thesis_title varchar(50), 
+@Lecturer_grade Decimal(4,2)
+
+as
+IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id) 
+    BEGIN
+        IF EXISTS(select student_id from grade_academic_thesis where lecturer_id=@Lecturer_id and student_id=@sid and title=@thesis_title)
+            BEGIN
+                UPDATE grade_academic_thesis
+                SET lecturer_grade= @Lecturer_grade
+                where lecturer_id=@Lecturer_id and student_id=@sid and title=@thesis_title
+            END
+        ELSE
+        INSERT into grade_academic_thesis(lecturer_id, student_id, title, lecturer_grade)
+        VALUES (@Lecturer_id, @sid, @thesis_title, @Lecturer_grade)
+    END
+GO
+
+--EXEC LecGradeThesis @Lecturer_id = 3, @sid =26 , @thesis_title = 'Study on X' , @Lecturer_grade = 80
+--drop Proc LecGradeThesis
+
+CREATE PROC LecGradedefense --5j
+
+
+
+
+
+
+
+j) Grade defense of a specific student.
+Signature:
+Name: LecGradedefense
+Input: @Lecturer_id int, @sid int, @defense_location varchar(5), @Lecturer_grade Decimal(4,2)
+Output: Nothing.
+
+
+
