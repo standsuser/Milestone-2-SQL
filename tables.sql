@@ -86,7 +86,7 @@ CREATE TABLE bachelor_project(
     code INTEGER IDENTITY,
     project_name VARCHAR(20),
     submitted_materials VARCHAR(100),
-    /*should we keep this even tho theres a submitted materials table*/
+    /*should we keep this even tho theres a submitted materials table??*/
     pdescription VARCHAR(100),
     PRIMARY KEY (code)
 );

@@ -221,16 +221,15 @@ declare @lecturer_grade int
 if @date is null 
 begin
 select @lecturer_grade = lecturer_grade from grade_academic_progress_report where @student_id = student_id
-update progress_report set comulative_progress_report_grade = @lecturer_grade
+update progress_report set grade = @lecturer_grade
 select * from progress_report where @student_id = student_id order by progress_report_date asc
 end
 else
 select @lecturer_grade = lecturer_grade from grade_academic_progress_report where @student_id = student_id
-update progress_report set comulative_progress_report_grade = @lecturer_grade
+update progress_report set grade = @lecturer_grade
 select * from progress_report where @student_id = student_id and @date = progress_report_date
-
-
 go
+
 CREATE PROC ViewMyDefense
 @student_id int
 as
@@ -264,7 +263,7 @@ CREATE PROC UpdateMyDefense
 @student_id int,
 @defense_content varchar(1000)
 as
-update defense set defense_content = @defense_content where @student_id = student_id
+update defense set content = @defense_content where @student_id = student_id
 go
 
 
@@ -277,7 +276,7 @@ declare @defense_grade decimal
 declare @cprg decimal
 select @thesis_grade = total_grade  from thesis where @student_id = student_id 
 select @defense_grade =total_grade from defense where @student_id = student_id
-select @cprg= comulative_progress_report_grade from progress_report where @student_id = student_id
+select @cprg= grade from progress_report where @student_id = student_id
 if @cprg is null or @defense_grade is null or @thesis_grade is null
 return null
 else 
@@ -292,7 +291,99 @@ CREATE PROC ViewNotBookedMeetings
 as
 select * from meeting where start_time is null
 
-
---start of 5
 go
 
+---------wa7wa7 end mariam begin
+
+CREATE PROC LecturerCreateLocalProject --5a
+    @Lecturer_id int, 
+    @proj_code varchar(10), 
+    @title varchar(50), 
+    @description varchar(200),
+    @major_code varchar(10)
+as
+IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id)
+    BEGIN
+        INSERT INTO bachelor_project (code,project_name, pdescription)
+            values (@proj_code, @title, @description)
+        INSERT INTO major_has_bachelor_project(major_code ,project_code )
+            values (@major_code, @proj_code)
+    END
+GO
+
+CREATE PROC SpecifyThesisDeadline --5b
+    @deadline datetime
+as 
+declare @tmp_id INT
+    UPDATE thesis SET deadline = @deadline
+IF EXISTS(SELECT @tmp_id as student_id  FROM student WHERE NOT EXISTS(select student_id FROM thesis ))
+    BEGIN 
+        INSERT INTO thesis(deadline,student_id) values (@deadline,@tmp_id)
+    END
+GO
+
+
+CREATE PROC CreateMeeting --5c
+@Lecturer_id int, 
+@start_time datetime, 
+@end_time datetime, 
+@date datetime, 
+@meeting_point varchar(5)
+as
+IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id)
+    BEGIN
+        INSERT INTO meeting(meeting_point ,lecturer_id ,meeting_date ,start_time ,end_time)
+            values (@meeting_point, @Lecturer_id, @date , @start_time, @end_time)
+
+    END
+GO
+
+
+CREATE PROC LecturerAddToDo --5d
+@meeting_id int,
+@to_do_list varchar(200)
+as
+IF EXISTS(select meeting_id from meeting where @meeting_id = meeting_id)
+    BEGIN
+        IF EXISTS(select meeting_id from meeting_to_do_list where @meeting_id = meeting_id)
+            BEGIN
+                UPDATE meeting_to_do_list
+                SET to_do_list = @to_do_list
+                WHERE meeting_id = @meeting_id
+            END
+        ELSE
+            INSERT INTO meeting_to_do_list(meeting_id ,to_do_list) values (@meeting_id, @to_do_list)
+    END
+GO
+
+
+
+CREATE PROC ViewMeetingLecturer --5e
+@Lecturer_id int, 
+@meeting_id int
+as
+
+IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id) --very sus revise and test
+    BEGIN
+        IF (@meeting_id = null)
+            BEGIN
+           
+            SELECT * FROM meeting WHERE EXISTS(select attendant_id from meeting_attendents where attendant_id=@lecturer_id)
+            ORDER BY meeting_date
+            END
+        ELSE
+            SELECT * FROM meeting WHERE EXISTS(select attendant_id from meeting_attendents where attendant_id=@lecturer_id and meeting_id=@meeting_id)
+                ORDER BY meeting_date
+    END
+GO
+
+
+CREATE PROC ViewEE
+as
+SELECT * 
+
+View external examiners that are not recommended to any academic local projects yet.
+Signature:
+Name: ViewEE
+Input: Nothing
+Output: Table containing details of external examiners.
