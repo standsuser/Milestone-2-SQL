@@ -449,18 +449,141 @@ GO
 --drop Proc LecGradeThesis
 
 CREATE PROC LecGradedefense --5j
+ @Lecturer_id int,
+ @sid int, 
+ @defense_location varchar(5),
+ @Lecturer_grade Decimal(4,2)
+
+ as
+IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id) 
+    BEGIN
+        IF EXISTS(select student_id from grade_academic_defense where lecturer_id=@Lecturer_id and student_id=@sid and defense_location=@defense_location)
+            BEGIN
+                UPDATE grade_academic_defense
+                SET lecturer_grade= @Lecturer_grade
+                where lecturer_id=@Lecturer_id and student_id=@sid and defense_location=@defense_location
+            END
+        ELSE
+        INSERT into grade_academic_defense(lecturer_id, student_id, defense_location, lecturer_grade)
+        VALUES (@Lecturer_id, @sid, @defense_location, @Lecturer_grade)
+    END
+GO
+
+--EXEC LecGradedefense @Lecturer_id = 3, @sid =26 , @defense_location = 's334' , @Lecturer_grade = 80
+
+
+CREATE PROC LecCreatePR--5k
+@Lecturer_id int, 
+@sid int, 
+@date datetime,
+@content varchar(1000)
+as
+    IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id) 
+        begin
+        insert into progress_report(student_id, progress_report_date, updating_user_id, content)
+        values(@sid,@date,@Lecturer_id, @content)
+        end
+go
+
+--EXEC LecCreatePR @Lecturer_id = 10, @sid =26, @date = '2022-7-6', @content = 'content of prog report'
 
 
 
+CREATE PROC LecGradePR--5l
+    @Lecturer_id int,
+    @sid int, 
+    @date datetime,
+    @lecturer_grade decimal(4,2)
+as 
+    IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id) 
+        begin 
+        IF EXISTS(select Assigned_Project_Code from student where student_id=@sid and exists(select academic_code from academic where academic_code= Assigned_Project_Code))
+            begin
+            update grade_academic_progress_report
+            SET lecturer_grade= @Lecturer_grade , progress_report_date = @date
+             where lecturer_id=@Lecturer_id and student_id=@sid
+             end
+        end
+go
+
+--EXEC LecGradePR @Lecturer_id = 9, @sid =28, @date = '2022-9-4', @lecturer_grade = 77
 
 
 
+--start of 6
+CREATE PROC TACreatePR --6a
+@student_id int,
+@teaching_assistant_id int,
+@date datetime,
+@content varchar(1000)
+as
+if exists(select teaching_assistant_id from teaching_assistant where teaching_assistant_id = @teaching_assistant_id)
+begin
+insert into progress_report(student_id, content, updating_user_id, progress_report_date)
+values (@student_id, @content, @teaching_assistant_id, @date)
+end
+go
 
-j) Grade defense of a specific student.
-Signature:
-Name: LecGradedefense
-Input: @Lecturer_id int, @sid int, @defense_location varchar(5), @Lecturer_grade Decimal(4,2)
-Output: Nothing.
+--EXEC TACreatePR @student_id = 1,@teaching_assistant_id =2,@date = '2003-6-7',@content = 'A+ progress report content'
+
+
+
+CREATE PROC TAAddToDo --6b
+@meeting_id int,
+@to_do_list varchar(200)
+as
+insert into meeting_to_do_list(meeting_id, to_do_list)
+values(@meeting_id, @to_do_list)
+go
+
+--EXEC TAAddToDo @meeting_id=4 , @to_do_list = 'the todolist for today'
+
+
+--start of 7
+CREATE PROC EEGradeThesis--7a
+@EE_id int,
+@sid int,
+@thesis_title varchar(50),
+@EE_grade decimal(4,2)
+as
+if exists(select external_examiner_id from external_examiner where @EE_id = external_examiner_id)
+    begin 
+
+
+    IF EXISTS(select student_id from grade_academic_thesis where external_examiner_id=@EE_id and student_id=@sid and title=@thesis_title)
+        begin
+            update grade_academic_thesis set external_examiner_grade = @EE_grade
+            where student_id = @sid and title = @thesis_title 
+        end
+    ELSE
+        INSERT into grade_academic_thesis(external_examiner_id, student_id, title, external_examiner_grade)
+        VALUES (@EE_id, @sid, @thesis_title, @EE_grade)
+    end
+GO
+
+--EXEC EEGradeThesis @EE_id = 6, @sid =26 , @thesis_title = 'Study on X' , @EE_grade = 60
+
+CREATE PROC EEGradeDefense--7b
+@EE_id int,
+@sid int,
+@defense_location varchar(5),
+@EE_grade decimal(4,2)
+as
+if exists(select external_examiner_id from external_examiner where @EE_id = external_examiner_id)
+    begin
+    IF EXISTS(select student_id from grade_academic_defense where external_examiner_id=@EE_id and student_id=@sid and defense_location=@defense_location)
+        begin
+            update grade_academic_defense set external_examiner_grade = @EE_grade
+            where student_id = @sid and defense_location = @defense_location
+        end
+    ELSE
+        INSERT into grade_academic_defense(external_examiner_id, student_id, defense_location, external_examiner_grade)
+        VALUES (@EE_id, @sid, @defense_location, @EE_grade)
+    end
+GO
+
+
+--EXEC EEGradeDefense @EE_id = 6, @sid =26 , @defense_location = 's334' , @EE_grade = 80
 
 
 
