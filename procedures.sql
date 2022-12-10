@@ -177,14 +177,33 @@ insert into student_preferences(student_id, preference_number, project_code)
 
 go
 
-/*CREATE PROC ViewMyThesis
+CREATE PROC ViewMyThesis
 @student_id int,
 @title varchar(50)
 as
-ALTER TABLE thesis
-ADD total_bachelor_grade decimal ;
+declare @grade1 decimal
+
+IF EXISTS(select * from grade_academic_thesis where @title = title)
 begin
-go */
+declare @external_examiner_grade decimal, @lecturer_grade decimal
+select @external_examiner_grade = external_examiner_grade from grade_academic_thesis
+select @lecturer_grade = lecturer_grade from grade_academic_thesis
+if @external_examiner_grade IS NOT NULL and @lecturer_grade IS NOT NULL 
+set @grade1 = (@external_examiner_grade + @lecturer_grade)/2
+update thesis set total_grade = @grade1 where @student_id = student_id
+end
+IF EXISTS(select * from grade_industrial_thesis where @title = title)
+begin
+declare @company_grade decimal, @employee_grade decimal
+select @company_grade = company_grade from grade_industrial_thesis
+select @employee_grade = staff_grade from grade_industrial_thesis
+if @employee_grade IS NOT NULL and @company_grade IS NOT NULL 
+set @grade1 = (@company_grade + @employee_grade)/2
+update thesis set total_grade = @grade1 where @student_id = student_id
+end
+select * from thesis
+go 
+
 CREATE PROC SubmitMyThesis
 @student_id int,
 @title varchar(50),
@@ -192,13 +211,42 @@ CREATE PROC SubmitMyThesis
 as
 insert into thesis(student_id, title, pdf_doc)
     values (@student_id, @title, @pdf_doc)
-
 go
+
+CREATE PROC ViewMyDefense
+@student_id int
+as
+declare @grade1 decimal
+declare @project varchar(10)
+set @project = (select Assigned_Project_Code from student where @student_id = student_id)
+
+IF EXISTS(select * from academic where @project = academic_code)
+begin
+declare @external_examiner_grade decimal, @lecturer_grade decimal
+select @external_examiner_grade = external_examiner_grade from grade_academic_thesis
+select @lecturer_grade = lecturer_grade from grade_academic_thesis
+if @external_examiner_grade IS NOT NULL and @lecturer_grade IS NOT NULL 
+set @grade1 = (@external_examiner_grade + @lecturer_grade)/2
+update defense set total_grade = @grade1 where @student_id = student_id
+end
+IF EXISTS(select * from industrial where @project = industrial_code)
+begin
+declare @company_grade decimal, @employee_grade decimal
+select @company_grade = company_grade from grade_industrial_thesis
+select @employee_grade = staff_grade from grade_industrial_thesis
+if @employee_grade IS NOT NULL and @company_grade IS NOT NULL 
+set @grade1 = (@company_grade + @employee_grade)/2
+update defense set total_grade = @grade1 where @student_id = student_id
+end
+select * from defense
+go
+--drop proc ViewMyDefense
+
+
 
 CREATE PROC UpdateMyDefense
 @student_id int,
 @defense_content varchar(1000)
 as
 insert into defense(student_id, defense_content) values (@student_id, @defense_content)
-
 go
