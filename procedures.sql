@@ -213,6 +213,24 @@ insert into thesis(student_id, title, pdf_doc)
     values (@student_id, @title, @pdf_doc)
 go
 
+CREATE PROC ViewMyProgressReport
+@student_id int,
+@date datetime
+as
+declare @lecturer_grade int
+if @date is null 
+begin
+select @lecturer_grade = lecturer_grade from grade_academic_progress_report where @student_id = student_id
+update progress_report set comulative_progress_report_grade = @lecturer_grade
+select * from progress_report where @student_id = student_id order by progress_report_date asc
+end
+else
+select @lecturer_grade = lecturer_grade from grade_academic_progress_report where @student_id = student_id
+update progress_report set comulative_progress_report_grade = @lecturer_grade
+select * from progress_report where @student_id = student_id and @date = progress_report_date
+
+
+go
 CREATE PROC ViewMyDefense
 @student_id int
 as
@@ -240,13 +258,41 @@ update defense set total_grade = @grade1 where @student_id = student_id
 end
 select * from defense
 go
---drop proc ViewMyDefense
-
 
 
 CREATE PROC UpdateMyDefense
 @student_id int,
 @defense_content varchar(1000)
 as
-insert into defense(student_id, defense_content) values (@student_id, @defense_content)
+update defense set defense_content = @defense_content where @student_id = student_id
 go
+
+
+CREATE PROC ViewMyBachelorProjectGrade
+@student_id int,
+@bachelor_grade decimal(4,2) output
+as
+declare @thesis_grade decimal
+declare @defense_grade decimal
+declare @cprg decimal
+select @thesis_grade = total_grade  from thesis where @student_id = student_id 
+select @defense_grade =total_grade from defense where @student_id = student_id
+select @cprg= comulative_progress_report_grade from progress_report where @student_id = student_id
+if @cprg is null or @defense_grade is null or @thesis_grade is null
+return null
+else 
+update student set TotalBachelorGrade =  0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg
+set @bachelor_grade = 0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg
+return @bachelor_grade
+go
+
+
+CREATE PROC ViewNotBookedMeetings
+@student_id int
+as
+select * from meeting where start_time is null
+
+
+--start of 5
+go
+
