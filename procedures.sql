@@ -378,12 +378,17 @@ IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id) --
 GO
 
 
-CREATE PROC ViewEE
+CREATE PROC ViewEE --5f
 as
-SELECT * 
 
-View external examiners that are not recommended to any academic local projects yet.
-Signature:
-Name: ViewEE
-Input: Nothing
-Output: Table containing details of external examiners.
+SELECT * 
+FROM external_examiner 
+WHERE NOT EXISTS 
+    (SELECT * 
+     FROM lecturer_recommend_external_examiner 
+     WHERE external_examiner.external_examiner_id = lecturer_recommend_external_examiner.external_examiner_id)
+GO
+
+--EXEC ViewEE 
+--DROP PROC ViewEE
+

@@ -225,9 +225,7 @@ values (7,34,1,'s334',100,32),
 
 insert into lecturer_recommend_external_examiner(lecturer_id,external_examiner_id,project_code)
 values (3,6,8),
-(8,14,5),
-(9,15,6),
-(10,16,7);
+(8,14,5);
 
 insert into student_preferences(student_id,preference_number,project_code)
 values (1,78,5),
