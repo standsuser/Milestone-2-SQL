@@ -1,7 +1,7 @@
-﻿CREATE PROC UserRegister --1a /*figure out how to return password and user_id and also what to insert in the tables down below (also external supervisor doesnt exist??))*/
+﻿CREATE PROC UserRegister --1a 
 @usertype varchar(20),
 @username varchar(20), 
-@email varchar(50) , /*should i specify unique here or just in the first sql file*/
+@email varchar(50) , 
 @first_name varchar(20),
 @last_name varchar(20), 
 @birth_date datetime, 
@@ -17,7 +17,7 @@
 @country_of_residence varchar(20),
 @users_id int output,
 @password varchar(10) output
-/* is this correct? should anything be not null should it be specific with nested ifs? or general?*/
+
 AS
 IF @usertype IS NULL or @username IS NULL or @email IS NULL 
 print 'One of the main inputs is null'
@@ -49,7 +49,7 @@ IF @usertype = 'Companies' AND
  (@company_name IS NULL or 
 @representative_name IS NULL or 
 @representative_email IS NULL or 
-@address IS NULL)  /*is location of company the address?*/
+@address IS NULL)  
 
     print 'One of the company values is null' 
 
@@ -133,11 +133,7 @@ ELSE
     SET @user_id = -1
 
 GO
---ask hereeeeeeeeeeeeeee
-    --DROP PROC UserLogin
- --   DECLARE @success bit, @user_id int
- --   EXEC UserLogin @email='ahmedd@gmail.com',@password= 'ahmed201' , @success OUTPUT , @user_id OUTPUT
-  --  PRINT @success + @user_id
+
 
 CREATE PROC ViewProfile --2b
 @user_id int
@@ -291,7 +287,7 @@ update defense set content = @defense_content where @student_id = student_id
 go
 
 
-CREATE PROC ViewMyBachelorProjectGrade--3f
+CREATE PROC ViewMyBachelorProjectGrade--3g
 @student_id int,
 @bachelor_grade decimal(4,2) output
 as
@@ -331,7 +327,7 @@ go
 
 
 
-CREATE PROC BookMeeting --3i --make sure not to book alr booked 
+CREATE PROC BookMeeting --3i 
  @sid int,
  @meeting_id int
 as
@@ -571,7 +567,7 @@ CREATE PROC ViewMeetingLecturer --5e
 @meeting_id int
 as
 
-IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id) --very sus revise and test
+IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id) 
     BEGIN
         IF (@meeting_id = null)
             BEGIN
@@ -617,7 +613,7 @@ CREATE PROC SuperviseIndustrial --5h
 @proj_code varchar(10)
 AS
 
-IF EXISTS(select industrial_code from industrial where @proj_code = industrial_code) --very sus revise and test
+IF EXISTS(select industrial_code from industrial where @proj_code = industrial_code) 
     BEGIN
             UPDATE industrial
             SET lecturer_id = @Lecturer_id
@@ -828,60 +824,50 @@ end
 go
 
 
-/*
-CREATE PROC AssignAllStudentsToLocalProject--8b
-as
-declare @stmpid int , @ppcode int
-
-IF EXISTS(SELECT @stmpid as student_id  FROM student WHERE EXISTS(select student_id FROM student_preferences ))
-    BEGIN
-    IF EXISTS(SELECT @ppcode as project_code  FROM student_preferences WHERE EXISTS(select code FROM bachelor_project ))
-        BEGIN
-        update student set Assigned_Project_Code = @ppcode where @stmpid = student_id
-        END
-    END
-SELECT(student_id)(code,project_name,submited_materials,pdescription) FROM (student)(bachelor_project)
-go
-*/
-
-
 CREATE PROC AssignAllStudentsToLocalProject--8b
 as
 declare @counter int
-declare @tmptable table(student_id int, preference_number int, project_code int)
 
-set @tmptable = (SELECT student_preferences.student_id ,preference_number ,project_code 
+DECLARE @CursorTestID INT = 1
+DECLARE @RunningTotal BIGINT = 0
+DECLARE @RowCnt BIGINT = 0
+
+SELECT @RowCnt = COUNT(student_id) FROM student
+
+
+
+SELECT student_preferences.student_id ,preference_number ,project_code
+INTO #tmptable
 FROM student_preferences inner join student
 on student_preferences.student_id = student.student_id
-order by student_preferences.preference_number DESC, student.gpa ASC)
-
+order by student_preferences.preference_number DESC  , student.gpa ASC  OFFSET 0 ROWS
+SELECT * FROM #tmptable
 set @counter = (SELECT COUNT(student_id) FROM student)
 
----------------------
-DECLARE scursor CURSOR FOR
-SELECT student_id 
-FROM @tmptable
 
+declare @tmpid int
+declare @tmpcode int
  
+WHILE @CursorTestID <= @RowCnt
+BEGIN
+    set @tmpid = (SELECT student_id from #tmptable)
+    set @tmpcode = (SELECT project_code from #tmptable)
+        update student
+        set Assigned_Project_Code = ( SELECT project_code  FROM  #tmptable WHERE student.student_id = #tmptable.student_id)
 
-declare @id int
-
-WHILE(@counter > 0)
-    BEGIN
-        OPEN emp_cursor
-
-
-
-
-
-
-    END
-
-
-
-EXEC AssignAllStudentsToLocalProject
+  DELETE FROM #tmptable WHERE student_id = @tmpid 
+    DELETE FROM #tmptable WHERE project_code = @tmpcode 
+    
+   SET @CursorTestID = @CursorTestID + 1 
+ 
+END
 
 GO
+
+--drop proc AssignAllStudentsToLocalProject
+--EXEC AssignAllStudentsToLocalProject
+
+
 
 
 CREATE PROC AssignTAs--8c
