@@ -215,7 +215,6 @@ CREATE TABLE progress_report(
 );
 
 CREATE TABLE grade_industrial_progress_report (
-    /*help should we referennce foreign key progress rep joint styudent id and student id referencing stuident or just once*/
     lecturer_id INTEGER,
     company_id INTEGER,
     student_id INTEGER,

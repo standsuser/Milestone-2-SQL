@@ -313,12 +313,47 @@ go
 CREATE PROC ViewNotBookedMeetings--3h
 @student_id int
 as
-select * from meeting where start_time is null
+--use inner not in  join to get all meetings with no student attendents 
+--query of meetings with attendents and query of meetings with student attendents 
 
+SELECT meeting.*
+FROM meeting
+INNER JOIN meeting_attendents
+ON meeting.meeting_id = meeting_attendents.meeting_id
+
+WHERE ( attendant_id  ) 
+NOT IN(SELECT student_id FROM student)
+ORDER BY meeting_date
 go
 
+--drop proc ViewNotBookedMeetings
+--EXEC ViewNotBookedMeetings @student_id=24
 
---3i
+
+
+CREATE PROC BookMeeting --3i --make sure not to book alr booked 
+ @sid int,
+ @meeting_id int
+as
+
+IF EXISTS(select meeting_id from meeting where @meeting_id = meeting.meeting_id)
+BEGIN
+IF EXISTS (
+SELECT meeting.meeting_id FROM meeting INNER JOIN meeting_attendents ON meeting.meeting_id = meeting_attendents.meeting_id
+
+WHERE ( attendant_id  ) 
+IN(SELECT student_id FROM student)
+)
+begin
+print 'meeting is already booked by a student'
+
+END
+ELSE INSERT INTO meeting_attendents(meeting_id,attendant_id) VALUES (@meeting_id,@sid)
+end
+go
+
+--EXEC BookMeeting @sid= 23 , @meeting_id= 1
+
 --3j
 
 CREATE PROC StudentAddToDo --3k
@@ -782,7 +817,7 @@ EXEC AssignAllStudentsToLocalProject
 GO
 
 
-CREATE PROC AssignTAs
+CREATE PROC AssignTAs--8c
 @coordinator_id int, 
 @TA_id int, 
 @proj_code varchar(10)
@@ -795,7 +830,7 @@ go
 
 
 
-CREATE PROC ViewRecommendation
+CREATE PROC ViewRecommendation--8d
 @lecturer_id int
 as
 select lecturer_id, external_examiner_id from lecturer_recommend_external_examiner ORDER BY lecturer_id ASC
@@ -803,7 +838,7 @@ select lecturer_id, external_examiner_id from lecturer_recommend_external_examin
 go
 
 
-CREATE PROC AssignEE
+CREATE PROC AssignEE--8e
 @coordinator_id int, 
 @EE_id int, 
 @proj_code varchar(10)
@@ -815,7 +850,7 @@ update academic set external_examiner_id = @EE_id where academic_code = @proj_co
 end
 go
 
-CREATE PROC ScheduleDefense
+CREATE PROC ScheduleDefense--8f
 @sid int, 
 @date datetime, 
 @time time, 
