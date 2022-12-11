@@ -762,6 +762,37 @@ end
 go
 
 
+
+CREATE PROC AssignAllStudentsToLocalProject--8b
+as
+declare @stmpid int , @ppcode int
+
+IF EXISTS(SELECT @stmpid as student_id  FROM student WHERE EXISTS(select student_id FROM student_preferences ))
+    BEGIN
+    IF EXISTS(SELECT @ppcode as project_code  FROM student_preferences WHERE EXISTS(select code FROM bachelor_project ))
+        BEGIN
+        update student set Assigned_Project_Code = @ppcode where @stmpid = student_id
+        END
+    END
+SELECT(student_id)(code,project_name,submited_materials,pdescription) FROM (student)(bachelor_project)
+go
+
+EXEC AssignAllStudentsToLocalProject
+
+) Automatically assign all students to their projects according to their preferences and GPAs.
+Signature:
+Name: AssignAllStudentsToLocalProject
+Input: Nothing
+Output: Table containing every student ID and the details of the local bachelor project he/she is
+assigned to.
+
+
+
+
+
+
+
+
 --start of 9
 
 
