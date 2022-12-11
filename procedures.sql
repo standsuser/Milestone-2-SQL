@@ -779,23 +779,53 @@ go
 
 EXEC AssignAllStudentsToLocalProject
 
-) Automatically assign all students to their projects according to their preferences and GPAs.
-Signature:
-Name: AssignAllStudentsToLocalProject
-Input: Nothing
-Output: Table containing every student ID and the details of the local bachelor project he/she is
-assigned to.
+GO
+
+
+CREATE PROC AssignTAs
+@coordinator_id int, 
+@TA_id int, 
+@proj_code varchar(10)
+as
+if exists(select coordinator_id from coordinator where @coordinator_id = coordinator_id)
+begin
+update academic set teaching_assistant_id = @TA_id where @proj_code = academic_code
+end
+go
 
 
 
-
-
-
-
-
+CREATE PROC ViewRecommendation
+@lecturer_id int
+as
+select lecturer_id, external_examiner_id from lecturer_recommend_external_examiner ORDER BY lecturer_id ASC
 --start of 9
+go
 
 
+CREATE PROC AssignEE
+@coordinator_id int, 
+@EE_id int, 
+@proj_code varchar(10)
+as
+if exists(select coordinator_id from coordinator where coordinator_id = @coordinator_id)
+begin
+select external_examiner_id, project_code from lecturer_recommend_external_examiner
+update academic set external_examiner_id = @EE_id where academic_code = @proj_code
+end
+go
+
+CREATE PROC ScheduleDefense
+@sid int, 
+@date datetime, 
+@time time, 
+@location varchar(5)
+as
+update defense set defense_date = @date where @sid = student_id
+update defense set defense_time = @time where @sid = student_id
+update defense set defense_location = @location where @sid = student_id
+
+go
 CREATE PROC EmployeeGradeThesis --9a
 @Employee_id int, 
 @sid int, 
