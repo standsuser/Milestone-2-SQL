@@ -219,7 +219,7 @@ if @employee_grade IS NOT NULL and @company_grade IS NOT NULL
 set @grade1 = (@company_grade + @employee_grade)/2
 update thesis set total_grade = @grade1 where @student_id = student_id
 end
-select * from thesis
+select * from thesis where @student_id = student_id 
 go 
 
 --EXEC ViewMyThesis @student_id=1, @title = 'Mechanical Uses'
@@ -304,7 +304,7 @@ select @cprg= grade from progress_report where @student_id = student_id
 if @cprg is null or @defense_grade is null or @thesis_grade is null
 return null
 else 
-update student set TotalBachelorGrade =  0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg
+update student set TotalBachelorGrade =  0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg where student_id=@student_id
 set @bachelor_grade = 0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg
 return @bachelor_grade
 go
@@ -354,7 +354,38 @@ go
 
 --EXEC BookMeeting @sid= 23 , @meeting_id= 1
 
---3j
+CREATE PROC ViewMeeting --3j
+@meeting_id int,
+@sid int
+as 
+IF(@meeting_id is null)
+    begin
+        Select * from meeting INNER JOIN meeting_attendents 
+        ON meeting.meeting_id = meeting_attendents.meeting_id
+        where (attendant_id= @sid)  
+
+         Select to_do_list 
+        from meeting_to_do_list INNER JOIN meeting
+        ON meeting_to_do_list.meeting_id = meeting.meeting_id
+        where (meeting_to_do_list.meeting_id= meeting.meeting_id)
+    end
+ELSE begin
+        SELECT * from meeting INNER JOIN meeting_attendents
+        ON meeting.meeting_id = meeting_attendents.meeting_id
+        where (attendant_id= @sid and meeting.meeting_id=@meeting_id) 
+         
+        Select to_do_list 
+        from meeting_to_do_list INNER JOIN meeting
+        ON meeting_to_do_list.meeting_id = meeting.meeting_id
+        where (meeting_to_do_list.meeting_id= meeting.meeting_id)
+
+    end
+
+go
+
+--drop proc ViewMeeting
+--EXEC ViewMeeting @meeting_id=null,@sid=1
+
 
 CREATE PROC StudentAddToDo --3k
 @meeting_id int,
@@ -797,7 +828,7 @@ end
 go
 
 
-
+/*
 CREATE PROC AssignAllStudentsToLocalProject--8b
 as
 declare @stmpid int , @ppcode int
@@ -811,6 +842,42 @@ IF EXISTS(SELECT @stmpid as student_id  FROM student WHERE EXISTS(select student
     END
 SELECT(student_id)(code,project_name,submited_materials,pdescription) FROM (student)(bachelor_project)
 go
+*/
+
+
+CREATE PROC AssignAllStudentsToLocalProject--8b
+as
+declare @counter int
+declare @tmptable table(student_id int, preference_number int, project_code int)
+
+set @tmptable = (SELECT student_preferences.student_id ,preference_number ,project_code 
+FROM student_preferences inner join student
+on student_preferences.student_id = student.student_id
+order by student_preferences.preference_number DESC, student.gpa ASC)
+
+set @counter = (SELECT COUNT(student_id) FROM student)
+
+---------------------
+DECLARE scursor CURSOR FOR
+SELECT student_id 
+FROM @tmptable
+
+ 
+
+declare @id int
+
+WHILE(@counter > 0)
+    BEGIN
+        OPEN emp_cursor
+
+
+
+
+
+
+    END
+
+
 
 EXEC AssignAllStudentsToLocalProject
 

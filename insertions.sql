@@ -228,11 +228,11 @@ values (3,6,8),
 (8,14,5);
 
 insert into student_preferences(student_id,preference_number,project_code)
-values (1,78,5),
-(23,69,4),
-(24,88,7),
-(25,67,8),
-(26,33,2);
+values (1,1,5),
+(23,2,4),
+(24,3,7),
+(25,4,8),
+(26,5,2);
 
 insert into major_has_bachelor_project(major_code,project_code)
 values(123,1),
