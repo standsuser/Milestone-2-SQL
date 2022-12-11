@@ -1,4 +1,4 @@
-﻿CREATE PROC UserRegister /*figure out how to return password and user_id and also what to insert in the tables down below (also external supervisor doesnt exist??))*/
+﻿CREATE PROC UserRegister --1a /*figure out how to return password and user_id and also what to insert in the tables down below (also external supervisor doesnt exist??))*/
 @usertype varchar(20),
 @username varchar(20), 
 @email varchar(50) , /*should i specify unique here or just in the first sql file*/
@@ -35,8 +35,9 @@ IF @usertype = 'Students' AND
 print 'One of the student values is null'
 ELSE IF @usertype = 'Students'
 BEGIN 
-INSERT INTO users(user_role, username, email)
-    VALUES (@usertype , @username , @email)
+INSERT INTO users(user_role, username, email ,phone_number)
+    VALUES (@usertype , @username , @email , @phone_number)
+
 INSERT INTO student(first_name, last_name, major_code, date_of_birth,adress, semester, gpa)
     VALUES(@first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
    set @users_id = (select max(users_id) from users)
@@ -55,8 +56,8 @@ IF @usertype = 'Companies' AND
 ELSE IF @usertype = 'Companies'
 
 BEGIN
-INSERT INTO users(user_role, username, email)
-    VALUES (@usertype ,  @username , @email)
+ INSERT INTO users(username,email, user_role, phone_number)
+    VALUES (@username, @email, @usertype, @phone_number)
 INSERT INTO company(company_name, representative_name, representative_email, company_location )
     VALUES (@company_name, @representative_name, @representative_email, @address)
 
@@ -114,7 +115,7 @@ ELSE IF @usertype = 'Coordinators'
 END
 GO
 
-CREATE PROC UserLogin
+CREATE PROC UserLogin --2a
 @email VARCHAR(50),
 @password VARCHAR(10),
 @success bit output,
@@ -131,16 +132,23 @@ ELSE
     SET @success = 0
     SET @user_id = -1
 
-    --DROP PROC UserLogin
 GO
+--ask hereeeeeeeeeeeeeee
+    --DROP PROC UserLogin
+ --   DECLARE @success bit, @user_id int
+ --   EXEC UserLogin @email='ahmedd@gmail.com',@password= 'ahmed201' , @success OUTPUT , @user_id OUTPUT
+  --  PRINT @success + @user_id
 
-CREATE PROC ViewProfile
+CREATE PROC ViewProfile --2b
 @user_id int
 as
 select * from users where @user_id = users_id
 go
 
-CREATE PROC ViewBachelorProjects
+
+--EXEC ViewProfile @user_id = 1
+
+CREATE PROC ViewBachelorProjects--2c
 @user_id int,
 @project_type varchar(20)
 as
@@ -165,19 +173,29 @@ begin
 select * from academic where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
 end
 go
+
+
+--EXEC ViewBachelorProjects @project_type= 'academic' , @user_id =3
+--EXEC ViewBachelorProjects @project_type= null , @user_id =3
+
 --start of task 3
 
-CREATE PROC MakePreferencesLocalProject
+CREATE PROC MakePreferencesLocalProject--3a
 @student_id int,
-@title varchar(50),
+@bachelor_code varchar(10),
 @preference_number int
 as
 insert into student_preferences(student_id, preference_number, project_code)
-    values (@student_id, @title, @preference_number)
+    values (@student_id, @preference_number, @bachelor_code)
 
 go
 
-CREATE PROC ViewMyThesis
+
+--EXEC MakePreferencesLocalProject @student_id=1, @bachelor_code=1, @preference_number=90
+
+
+
+CREATE PROC ViewMyThesis--3b
 @student_id int,
 @title varchar(50)
 as
@@ -204,7 +222,9 @@ end
 select * from thesis
 go 
 
-CREATE PROC SubmitMyThesis
+--EXEC ViewMyThesis @student_id=1, @title = 'Mechanical Uses'
+
+CREATE PROC SubmitMyThesis--3c
 @student_id int,
 @title varchar(50),
 @pdf_doc varchar(1000)
@@ -213,7 +233,10 @@ insert into thesis(student_id, title, pdf_doc)
     values (@student_id, @title, @pdf_doc)
 go
 
-CREATE PROC ViewMyProgressReport
+--EXEC SubmitMyThesis @student_id=1, @title = 'test test' , @pdf_doc='pdfpdfpdfpdf'
+
+
+CREATE PROC ViewMyProgressReport--3d
 @student_id int,
 @date datetime
 as
@@ -230,7 +253,8 @@ update progress_report set grade = @lecturer_grade
 select * from progress_report where @student_id = student_id and @date = progress_report_date
 go
 
-CREATE PROC ViewMyDefense
+
+CREATE PROC ViewMyDefense--3e
 @student_id int
 as
 declare @grade1 decimal
@@ -259,7 +283,7 @@ select * from defense
 go
 
 
-CREATE PROC UpdateMyDefense
+CREATE PROC UpdateMyDefense--3f
 @student_id int,
 @defense_content varchar(1000)
 as
@@ -267,7 +291,7 @@ update defense set content = @defense_content where @student_id = student_id
 go
 
 
-CREATE PROC ViewMyBachelorProjectGrade
+CREATE PROC ViewMyBachelorProjectGrade--3f
 @student_id int,
 @bachelor_grade decimal(4,2) output
 as
@@ -286,14 +310,132 @@ return @bachelor_grade
 go
 
 
-CREATE PROC ViewNotBookedMeetings
+CREATE PROC ViewNotBookedMeetings--3h
 @student_id int
 as
 select * from meeting where start_time is null
 
 go
 
----------wa7wa7 end mariam begin
+
+--3i
+--3j
+
+CREATE PROC StudentAddToDo --3k
+@meeting_id int,
+@to_do_list varchar(200)
+as
+IF EXISTS(select meeting_id from meeting where @meeting_id = meeting_id)
+    BEGIN
+        IF EXISTS(select meeting_id from meeting_to_do_list where @meeting_id = meeting_id)
+            BEGIN
+                UPDATE meeting_to_do_list
+                SET to_do_list = @to_do_list
+                WHERE meeting_id = @meeting_id
+            END
+        ELSE
+            INSERT INTO meeting_to_do_list(meeting_id ,to_do_list) values (@meeting_id, @to_do_list)
+    END
+GO
+
+--start of 4
+CREATE PROC AddEmployee--4a
+
+@CompanyID int ,
+@email varchar(50), 
+@name varchar(20), 
+@phone_number varchar(20),
+@field varchar(25)
+
+as
+if exists(select company_id from company where @CompanyID = company_id)
+begin
+insert into employee(company_id, email, phone, field, employee_password)
+values(@CompanyID, @email, @phone_number, @field, @CompanyID)
+select staff_id from employee where email = @email
+select employee_password from employee where email = @email
+select company_id from employee where email = @email
+end
+
+go
+
+CREATE PROC CompanyCreateLocalProject--4b
+@company_id int,
+@proj_code varchar(10),
+@title varchar(50),
+@description varchar(200),
+@major_code varchar(10)
+as
+if exists(select company_id from company where company_id = @company_id)
+begin
+insert into bachelor_project(code, project_name, pdescription)
+values(@proj_code, @title, @description)
+
+insert into industrial(industrial_code, company_id)
+values(@proj_code, @company_id) 
+
+insert into major_has_bachelor_project(major_code, project_code)
+values(@major_code, @proj_code)
+end
+
+go
+
+CREATE PROC AssignEmployee--4c
+@bachelor_code varchar(10), 
+@staff_id int, 
+@Company_id int
+as
+if exists(select company_id from company where @Company_id = company_id)
+begin
+update industrial set staff_id = @staff_id where @bachelor_code =industrial_code and company_id = @Company_id
+end
+
+go
+
+CREATE PROC CompanyGradeThesis--4d
+@Company_id int, 
+@sid int, 
+@thesis_title varchar(50), 
+@Company_grade Decimal(4,2)
+as
+if exists(select company_id from company where @Company_id = company_id)
+begin 
+update grade_industrial_thesis set company_grade = @Company_grade where
+student_id = @sid and @thesis_title = title
+end
+
+go
+
+CREATE PROC CompanyGradedefense--4e
+@Company_id int, 
+@sid int, 
+@defense_location varchar(5), 
+@Company_grade Decimal(4,2)
+as
+if exists(select company_id from company where @Company_id = company_id)
+begin
+update grade_industrial_defense set company_grade = @Company_grade where
+student_id = @sid and @defense_location = defense_location
+end
+
+go
+
+CREATE PROC CompanyGradePR--4f
+@Company_id int, 
+@sid int, 
+@date datetime, 
+@Company_grade decimal(4,2)
+as
+if exists(select company_id from company where @Company_id = company_id)
+begin
+update grade_industrial_progress_report set company_grade = @Company_grade
+where @sid = student_id and @date = progress_report_date
+end
+
+go
+
+--5 starts
+
 
 CREATE PROC LecturerCreateLocalProject --5a
     @Lecturer_id int, 
@@ -586,4 +728,84 @@ GO
 --EXEC EEGradeDefense @EE_id = 6, @sid =26 , @defense_location = 's334' , @EE_grade = 80
 
 
+--start of 8
+CREATE PROC ViewUsers--8a
+@User_type varchar(20), 
+@User_id int
+as
+select * from users where @User_id = users_id
+if(@User_type = 'Students')
+begin
+select * from student where @User_id = student_id
+end
+else if (@User_type = 'Companies')
+begin 
+select * from company where @User_id = company_id
+end
+else if (@User_type = 'Teaching assistants')
+begin 
+select * from teaching_assistant where @User_id = teaching_assistant_id
+end
+else if (@User_type = 'External examiners')
+begin
+select * from external_examiner where @User_id = external_examiner_id
+end
+else if (@User_type = 'Coordinator')
+begin
+select * from coordinator where @User_id = coordinator_id
+end
+else if (@User_type = 'Lecturers')
+begin
+select * from lecturer where @User_id = lecturer_id
+end
+
+go
+
+
+--start of 9
+
+
+CREATE PROC EmployeeGradeThesis --9a
+@Employee_id int, 
+@sid int, 
+@thesis_title varchar(50), 
+@Employee_grade Decimal(4,2)
+as
+if exists(select staff_id from employee where staff_id = @Employee_id)
+begin
+update grade_industrial_thesis set staff_grade = @Employee_grade
+where @sid = student_id and @thesis_title = title
+end
+
+go
+
+CREATE PROC EmployeeGradedefense --9b
+@Employee_id int, 
+@sid int, 
+@defense_location varchar(5), 
+@Employee_grade Decimal(4,2)
+as
+if exists(select staff_id from employee where staff_id = @Employee_id)
+begin
+update grade_industrial_defense set employee_grade = @Employee_grade
+where @sid = student_id and @defense_location = defense_location
+end
+
+
+go
+
+
+CREATE PROC EmployeeCreatePR --9c
+@Employee_id int, 
+@sid int, 
+@date datetime, 
+@content varchar(1000)
+as
+if exists(select staff_id from employee where staff_id = @Employee_id)
+begin
+insert into progress_report(student_id, content, progress_report_date, updating_user_id)
+values(@sid, @content, @date, @Employee_id)
+end
+
+go
 
