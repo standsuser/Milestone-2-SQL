@@ -826,45 +826,74 @@ go
 
 CREATE PROC AssignAllStudentsToLocalProject--8b
 as
-declare @counter int
-
-DECLARE @CursorTestID INT = 1
-DECLARE @RunningTotal BIGINT = 0
-DECLARE @RowCnt BIGINT = 0
-
-SELECT @RowCnt = COUNT(student_id) FROM student
 
 
-
-SELECT student_preferences.student_id ,preference_number ,project_code
-INTO #tmptable
-FROM student_preferences inner join student
-on student_preferences.student_id = student.student_id
-order by student_preferences.preference_number DESC  , student.gpa ASC  OFFSET 0 ROWS
-SELECT * FROM #tmptable
-set @counter = (SELECT COUNT(student_id) FROM student)
+DECLARE @counter INT = 0
+DECLARE @RowCnt INT
 
 
 declare @tmpid int
 declare @tmpcode int
- 
-WHILE @CursorTestID <= @RowCnt
-BEGIN
-    set @tmpid = (SELECT student_id from #tmptable)
-    set @tmpcode = (SELECT project_code from #tmptable)
-        update student
-        set Assigned_Project_Code = ( SELECT project_code  FROM  #tmptable WHERE student.student_id = #tmptable.student_id)
 
-  DELETE FROM #tmptable WHERE student_id = @tmpid 
-    DELETE FROM #tmptable WHERE project_code = @tmpcode 
-    
-   SET @CursorTestID = @CursorTestID + 1 
+
+SELECT student_preferences.student_id ,preference_number ,project_code
+INTO atmptable
+FROM student_preferences inner join student
+on student_preferences.student_id = student.student_id
+order by student_preferences.preference_number DESC  , student.gpa ASC  
+
+
+SELECT @RowCnt = COUNT(student_id) FROM atmptable
+
+WHILE (@counter <= @RowCnt)
+BEGIN
+ print @counter
+
+    set @tmpid = (SELECT student_id 
+FROM (
+    SELECT student_id, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RowNum
+    FROM atmptable
+) AS tmptable
+WHERE tmptable.RowNum = 1)
+
+
+print @tmpid
+
+
+
+
+set @tmpcode = (
+    SELECT project_code 
+FROM (
+    SELECT project_code, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS RowNum
+    FROM atmptable
+) AS tmptable2
+WHERE tmptable2.RowNum = 1)
+
+print @tmpcode
+
+        update student
+        set Assigned_Project_Code =  @tmpcode WHERE student.student_id = @tmpid
+
+
  
+  DELETE FROM atmptable WHERE student_id = @tmpid 
+    DELETE FROM atmptable WHERE project_code = @tmpcode 
+   SET @counter = @counter + 1 
 END
+
+    drop table atmptable
+
+
+
 
 GO
 
+
+
+
 --drop proc AssignAllStudentsToLocalProject
+
 --EXEC AssignAllStudentsToLocalProject
 
 
