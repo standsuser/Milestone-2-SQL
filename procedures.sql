@@ -827,14 +827,10 @@ go
 CREATE PROC AssignAllStudentsToLocalProject--8b
 as
 
-
-DECLARE @counter INT = 0
+DECLARE @counter INT = 1
 DECLARE @RowCnt INT
-
-
 declare @tmpid int
 declare @tmpcode int
-
 
 SELECT student_preferences.student_id ,preference_number ,project_code
 INTO atmptable
@@ -847,7 +843,6 @@ SELECT @RowCnt = COUNT(student_id) FROM atmptable
 
 WHILE (@counter <= @RowCnt)
 BEGIN
- print @counter
 
     set @tmpid = (SELECT student_id 
 FROM (
@@ -855,12 +850,6 @@ FROM (
     FROM atmptable
 ) AS tmptable
 WHERE tmptable.RowNum = 1)
-
-
-print @tmpid
-
-
-
 
 set @tmpcode = (
     SELECT project_code 
@@ -870,22 +859,15 @@ FROM (
 ) AS tmptable2
 WHERE tmptable2.RowNum = 1)
 
-print @tmpcode
-
         update student
         set Assigned_Project_Code =  @tmpcode WHERE student.student_id = @tmpid
 
-
- 
   DELETE FROM atmptable WHERE student_id = @tmpid 
     DELETE FROM atmptable WHERE project_code = @tmpcode 
    SET @counter = @counter + 1 
 END
 
     drop table atmptable
-
-
-
 
 GO
 
