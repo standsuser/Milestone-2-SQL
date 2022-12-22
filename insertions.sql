@@ -232,7 +232,11 @@ values (1,1,5),
 (23,2,4),
 (24,3,7),
 (25,4,8),
-(26,5,2);
+(26,5,2),
+(27,6,7),
+(28,7,3),
+(29,8,1),
+(27,9,6);
 
 insert into major_has_bachelor_project(major_code,project_code)
 values(123,1),
