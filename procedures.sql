@@ -14,95 +14,74 @@
 @representative_name varchar(20), 
 @representative_email varchar(50), 
 @phone_number varchar(20),
-@country_of_residence varchar(20),
-@users_id int output,
-@password varchar(10) output
+@country_of_residence varchar(20)
 
 AS
-IF @usertype IS NULL or @username IS NULL or @email IS NULL 
-print 'One of the main inputs is null'
 
+declare @users_id int
+declare @password varchar(10) 
 
-IF @usertype = 'Students' AND
- (@first_name IS NULL or 
-    @last_name IS NULL or 
-    @major_code IS NULL or 
-    @birth_date IS NULL or 
-    @address IS NULL or 
-    @semester IS NULL or
-    @gpa IS NULL)
-
-print 'One of the student values is null'
-ELSE IF @usertype = 'Students'
+IF @usertype = 'Students'
 BEGIN 
-INSERT INTO users(user_role, username, email ,phone_number)
-    VALUES (@usertype , @username , @email , @phone_number)
+ INSERT INTO users(username, email, user_role, phone_number)
+	VALUES (@username, @email, @usertype, @phone_number)
 
-INSERT INTO student(first_name, last_name, major_code, date_of_birth,adress, semester, gpa)
-    VALUES(@first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
-   set @users_id = (select max(users_id) from users)
-   set @password = (select max(users_id) from users)
-    insert into users(user_password)
-    values (@password)
+	set @users_id = (select max(users_id) from users)
+	set @password = (select max(users_id) from users)
+	
+INSERT INTO student(student_id, first_name, last_name, major_code, date_of_birth,adress, semester, gpa)
+	VALUES(@users_id, @first_name, @last_name,@major_code, @birth_date,@address, @semester, @gpa )
+	
+	update users set user_password = @password where @users_id = users_id
+
 END
-IF @usertype = 'Companies' AND
- (@company_name IS NULL or 
-@representative_name IS NULL or 
-@representative_email IS NULL or 
-@address IS NULL)  
 
-    print 'One of the company values is null' 
-
-ELSE IF @usertype = 'Companies'
+IF @usertype = 'Companies'
 
 BEGIN
  INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
-INSERT INTO company(company_name, representative_name, representative_email, company_location )
-    VALUES (@company_name, @representative_name, @representative_email, @address)
 
    set @users_id = (select max(users_id) from users)
    set @password = (select max(users_id) from users)
-    insert into users(user_password)
-    values (@password)
+
+INSERT INTO company(company_id, company_name, representative_name, representative_email, company_location )
+    	VALUES (@users_id, @company_name, @representative_name, @representative_email, @address)
+
+	update users set user_password = @password where @users_id = users_id
+
 END
-IF @usertype = 'Teaching assistants' and @username is null or @email is null or @usertype is null or  @phone_number is null
 
-    print 'One of the TA values is null'
-
-ELSE IF @usertype = 'Teaching assistants'
+IF @usertype = 'Teaching assistants'
 BEGIN
  INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
+
     SET @users_id = (SELECT max(users_id) FROM users)
     SET @password = (SELECT max(users_id) FROM users)
+
  INSERT INTO teaching_assistant(teaching_assistant_id)
     VALUES (@users_id)
- INSERT INTO users(user_password)
-    VALUES (@password)
 
+	update users set user_password = @password where @users_id = users_id
 
 END
-IF @usertype = 'External examiners' and @username is null or @email is null or @usertype is null or  @phone_number is null
 
-    print 'One of the external_examiner values is null'
-
-ELSE IF @usertype = 'External examiners'
+IF @usertype = 'External examiners'
 BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
         VALUES (@username, @email, @usertype, @phone_number)
+
     SET @users_id = (SELECT max(users_id) FROM users)
     SET @password = (SELECT max(users_id) FROM users)
+
     INSERT INTO external_examiner(external_examiner_id)
         VALUES (@users_id)
-    INSERT INTO users(user_password)
-        VALUES (@password)
+	
+	update users set user_password = @password where @users_id = users_id
 END
-IF @usertype = 'Coordinators' and @username is null or @email is null or @usertype is null or  @phone_number is null
 
-    print 'One of the coordinator values is null'
-
-ELSE IF @usertype = 'Coordinators'
+IF @usertype = 'Coordinators'
     BEGIN 
     INSERT INTO users(username,email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
@@ -110,10 +89,35 @@ ELSE IF @usertype = 'Coordinators'
     SET @password = (SELECT max(users_id) FROM users)
     INSERT INTO coordinator(coordinator_id)
         VALUES (@users_id)
-    INSERT INTO users(user_password)
-        VALUES (@password)
+
+	update users set user_password = @password where @users_id = users_id
+END
+
+IF @usertype = 'Lecturer'
+    BEGIN 
+    INSERT INTO users(username, email, user_role, phone_number)
+    VALUES (@username, @email, @usertype, @phone_number)
+	SET @users_id = (SELECT max(users_id) FROM users)
+	SET @password = (SELECT max(users_id) FROM users)
+
+    INSERT INTO lecturer (lecturer_id) VALUES (@users_id)
+
+
+	update users set user_password = @password where @users_id = users_id
 END
 GO
+
+EXEC UserRegister
+
+DROP PROC UserRegister 
+EXEC UserRegister @usertype='Students',@username='userx' ,@email ='testcshjgshk.com', @first_name ='mariam',@last_name ='mohamed',@birth_date = '3/3/2003',@GPA = 0.7, @semester =3, @address ='maadi', @major_code = 123,
+
+@faculty_code =NULL, 
+@company_name =NULL,
+@representative_name = NULL, 
+@representative_email =NULL, 
+@phone_number =NULL,
+@country_of_residence =NULL
 
 CREATE PROC UserLogin --2a
 @email VARCHAR(50),
