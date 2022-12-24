@@ -107,17 +107,16 @@ IF @usertype = 'Lecturer'
 END
 GO
 
-EXEC UserRegister
 
-DROP PROC UserRegister 
-EXEC UserRegister @usertype='Students',@username='userx' ,@email ='testcshjgshk.com', @first_name ='mariam',@last_name ='mohamed',@birth_date = '3/3/2003',@GPA = 0.7, @semester =3, @address ='maadi', @major_code = 123,
+--DROP PROC UserRegister 
+/*EXEC UserRegister @usertype='Lecturer',@username='userlecx' ,@email ='testlec.com', @first_name ='mariam',@last_name ='mohamed',@birth_date = '3/3/2003',@GPA = 0.7, @semester =3, @address ='maadi', @major_code = 123,
 
 @faculty_code =NULL, 
 @company_name =NULL,
 @representative_name = NULL, 
 @representative_email =NULL, 
 @phone_number =NULL,
-@country_of_residence =NULL
+@country_of_residence =NULL*/
 
 CREATE PROC UserLogin --2a
 @email VARCHAR(50),
