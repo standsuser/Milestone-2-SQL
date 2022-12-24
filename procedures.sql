@@ -93,7 +93,7 @@ IF @usertype = 'Coordinators'
 	update users set user_password = @password where @users_id = users_id
 END
 
-IF @usertype = 'Lecturer'
+IF @usertype = 'Lecturers'
     BEGIN 
     INSERT INTO users(username, email, user_role, phone_number)
     VALUES (@username, @email, @usertype, @phone_number)
