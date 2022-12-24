@@ -120,23 +120,24 @@ GO
 
 CREATE PROC UserLogin --2a
 @email VARCHAR(50),
-@password VARCHAR(10),
-@success bit output,
-@user_id int output
-as 
+@password VARCHAR(10)
+
+as
+declare @success bit 
 declare @tmp_id INT
 IF EXISTS(SELECT @tmp_id as users_id  FROM users WHERE email = @email and user_password = @password)
     BEGIN 
-
         SET @success = 1
-        SET @user_id = @tmp_id
     END
 ELSE 
     SET @success = 0
-    SET @user_id = -1
+    SELECT 'Return' = @success
 
 GO
 
+--drop proc UserLogin
+
+--exec UserLogin @email='cardthjtk@gmail.com', @password=1036
 
 CREATE PROC ViewProfile --2b
 @user_id int
