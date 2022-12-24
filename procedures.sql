@@ -117,6 +117,20 @@ GO
 @representative_email =NULL, 
 @phone_number =NULL,
 @country_of_residence =NULL*/
+CREATE PROC LoginHelper
+@email VARCHAR(50),
+@password VARCHAR(10)
+
+as
+declare @tmp_id INT
+IF EXISTS(SELECT @tmp_id as users_id  FROM users WHERE email = @email and user_password = @password)
+    BEGIN 
+    SET @tmp_id=(SELECT users_id  FROM users WHERE email = @email and user_password = @password)
+    END
+ELSE
+    SET @tmp_id=-1
+    SELECT 'Return' = @tmp_id
+GO
 
 CREATE PROC UserLogin --2a
 @email VARCHAR(50),
@@ -132,12 +146,14 @@ IF EXISTS(SELECT @tmp_id as users_id  FROM users WHERE email = @email and user_p
 ELSE 
     SET @success = 0
     SELECT 'Return' = @success
+    EXEC LoginHelper @email=@email, @password = @password
 
 GO
 
---drop proc UserLogin
 
---exec UserLogin @email='cardthjtk@gmail.com', @password=1036
+--drop proc UserLogin drop proc LoginHelper
+
+--exec UserLogin @email='card@gmail.com', @password=1036
 
 CREATE PROC ViewProfile --2b
 @user_id int
