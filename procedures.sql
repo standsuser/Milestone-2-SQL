@@ -164,33 +164,35 @@ go
 
 --EXEC ViewProfile @user_id = 1
 
+
 CREATE PROC ViewBachelorProjects--2c
 @user_id int,
 @project_type varchar(20)
 as
 if @user_id is null and @project_type is null
 begin
-select * from bachelor_project
-select * from academic
-select * from industrial
+select * from bachelor_project 
+
 end
+
 else
-if @project_type is null
+if @project_type is null and @user_id is not null
 begin 
-select * from academic where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
-select * from industrial where @user_id = lecturer_id or @user_id = staff_id or @user_id = company_id
+select * from bachelor_project  
+
 end
+
 else if @project_type = 'industrial'
 begin 
-select * from industrial where @user_id = lecturer_id or @user_id = staff_id or @user_id = company_id
+select * from bachelor_project  inner join industrial on code = industrial_code where @user_id = lecturer_id or @user_id = staff_id or @user_id = company_id
 end
 else if @project_type = 'academic'
 begin
-select * from academic where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
+select * from bachelor_project  inner join academic on code = academic_code where @user_id = lecturer_id or @user_id = teaching_assistant_id or @user_id = external_examiner_id
 end
 go
 
-drop proc ViewBachelorProjects
+--drop proc ViewBachelorProjects
 --EXEC ViewBachelorProjects @project_type= 'academic' , @user_id =3
 --EXEC ViewBachelorProjects @project_type= null , @user_id =3
 
