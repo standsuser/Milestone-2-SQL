@@ -873,8 +873,7 @@ end
 
 go
 
-
-CREATE PROC AssignAllStudentsToLocalProject--8b
+CREATE PROC AssignAllStudentsToLocalProject--8b CHANGES HERE
 as
 
 DECLARE @counter INT = 1
@@ -886,7 +885,7 @@ SELECT student_preferences.student_id ,preference_number ,project_code
 INTO atmptable
 FROM student_preferences inner join student
 on student_preferences.student_id = student.student_id
-order by student_preferences.preference_number DESC  , student.gpa ASC  
+order by student_preferences.preference_number DESC  , student.gpa ASC
 
 
 SELECT @RowCnt = COUNT(student_id) FROM atmptable
@@ -919,8 +918,10 @@ END
 
     drop table atmptable
 
+SELECT s.student_id, bp.code,bp.project_name, bp.pdescription, bp.submitted_materials
+FROM student s INNER JOIN bachelor_project bp
+ON s.Assigned_Project_Code = bp.code
 GO
-
 
 
 
@@ -931,38 +932,42 @@ GO
 
 
 
-CREATE PROC AssignTAs--8c
+CREATE PROC AssignTAs --8c CHANGES HERE
 @coordinator_id int, 
 @TA_id int, 
 @proj_code varchar(10)
 as
 if exists(select coordinator_id from coordinator where @coordinator_id = coordinator_id)
 begin
-update academic set teaching_assistant_id = @TA_id where @proj_code = academic_code
+update academic set teaching_assistant_id = @TA_id where academic_code = @proj_code 
 end
 go
 
+--drop proc AssignTAs
 
 
-CREATE PROC ViewRecommendation--8d
+CREATE PROC ViewRecommendation--8d CHANGES HERE
 @lecturer_id int
 as
-select lecturer_id, external_examiner_id from lecturer_recommend_external_examiner ORDER BY lecturer_id ASC
---start of 9
+select lecturer_id, external_examiner_id from lecturer_recommend_external_examiner WHERE @lecturer_id = lecturer_id ORDER BY lecturer_id ASC
+
 go
 
+--drop proc ViewRecommendation
 
-CREATE PROC AssignEE--8e
+
+CREATE PROC AssignEE--8e CHANGES HERE
 @coordinator_id int, 
 @EE_id int, 
 @proj_code varchar(10)
 as
 if exists(select coordinator_id from coordinator where coordinator_id = @coordinator_id)
 begin
-select external_examiner_id, project_code from lecturer_recommend_external_examiner
 update academic set external_examiner_id = @EE_id where academic_code = @proj_code
 end
 go
+
+--drop proc AssignEE
 
 CREATE PROC ScheduleDefense--8f
 @sid int, 
