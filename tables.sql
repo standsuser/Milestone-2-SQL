@@ -34,7 +34,7 @@ CREATE TABLE company (
 );
 
 CREATE TABLE employee(
-    staff_id INTEGER,
+    staff_id INTEGER IDENTITY,
     company_id INTEGER,
     username VARCHAR(10),
     employee_password VARCHAR(10),
@@ -83,7 +83,7 @@ CREATE TABLE major(
 );
 
 CREATE TABLE bachelor_project(
-    code INTEGER IDENTITY,
+    code INTEGER,
     project_name VARCHAR(20),
     submitted_materials VARCHAR(100),
     pdescription VARCHAR(100),

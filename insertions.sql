@@ -48,11 +48,11 @@ values (7,'PizzaFactory','pizza factory','PizzaFactor@gmail.com','uk berimingham
 (12,'travelagency','the travel agency','thetravelagency@gmail.com','uk london'),
 (13,'partycatering','party catering','partycaterers@gmail.com','cairo egypt ,new cairo');
 
-insert into employee(staff_id,company_id,username,employee_password,email,field,phone)
-values(34,7,'maryamamr','maryam1881','maryamamr@gmail.com','CEO',56738742989),
-(35,11,'anasahmed','wanas26','anasahmed@gmail.com','Accountant',8372780928),
-(36,12,'gamalhany','gamalHH','gamalhany@gmail.com','HR',0880877700),
-(37,13,'malaksamir','samirk2','malaksamir@gmail.com','Supervisor',26376238762);
+insert into employee(company_id,username,employee_password,email,field,phone)
+values(7,'maryamamr','maryam1881','maryamamr@gmail.com','CEO',56738742989),
+(11,'anasahmed','wanas26','anasahmed@gmail.com','Accountant',8372780928),
+(12,'gamalhany','gamalHH','gamalhany@gmail.com','HR',0880877700),
+(13,'malaksamir','samirk2','malaksamir@gmail.com','Supervisor',26376238762);
 
 insert into external_examiner (external_examiner_id,schedule)
 values(6,'9AM till 3 PM'),
@@ -84,15 +84,15 @@ values(123,'software eng',70),
 (125,'Clinical psychology',72),
 (126,'mechanical eng',73);
 
-insert into bachelor_project(project_name,submitted_materials,pdescription)
-values('Cybersecurity','part one','project for security'),
-('Product Management','last part','business bachelor project'),
-('Data Science','part three','informatics and computer science '),
-('Design Projects','design two','illusions designs'),
-('Business','part one','project for business'),
-('Management','fifth part','business bachelor project'),
-('Databases ','part three','informatics and computer science '),
-('Design Project 1','design three','illusions designs');
+insert into bachelor_project(code,project_name,submitted_materials,pdescription)
+values(1,'Cybersecurity','part one','project for security'),
+(2,'Product Management','last part','business bachelor project'),
+(3,'Data Science','part three','informatics and computer science '),
+(4,'Design Projects','design two','illusions designs'),
+(5,'Business','part one','project for business'),
+(6,'Management','fifth part','business bachelor project'),
+(7,'Databases ','part three','informatics and computer science '),
+(8,'Design Project 1','design three','illusions designs');
 
 insert into student(student_id,first_name,last_name,major_code,date_of_birth,adress,semester,gpa, TotalBachelorGrade, Assigned_Project_Code )
 values(1,'ahmed','mazen',123,'2003-12-12','cairo',4,2.3,74,1), 

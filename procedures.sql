@@ -213,34 +213,58 @@ go
 
 
 
-CREATE PROC ViewMyThesis--3b
-@student_id int,
-@title varchar(50)
+create proc ViewMyThesis
+@sid int, @title varchar(50)
 as
-declare @grade1 decimal
+if exists(Select *
+from student INNER JOIN academic ON student.Assigned_Project_Code=academic.academic_code
+where student.student_id=@sid)
+BEGIN
 
-IF EXISTS(select * from grade_academic_thesis where @title = title)
-begin
-declare @external_examiner_grade decimal, @lecturer_grade decimal
-select @external_examiner_grade = external_examiner_grade from grade_academic_thesis
-select @lecturer_grade = lecturer_grade from grade_academic_thesis
-if @external_examiner_grade IS NOT NULL and @lecturer_grade IS NOT NULL 
-set @grade1 = (@external_examiner_grade + @lecturer_grade)/2
-update thesis set total_grade = @grade1 where @student_id = student_id
-end
-IF EXISTS(select * from grade_industrial_thesis where @title = title)
-begin
-declare @company_grade decimal, @employee_grade decimal
-select @company_grade = company_grade from grade_industrial_thesis
-select @employee_grade = staff_grade from grade_industrial_thesis
-if @employee_grade IS NOT NULL and @company_grade IS NOT NULL 
-set @grade1 = (@company_grade + @employee_grade)/2
-update thesis set total_grade = @grade1 where @student_id = student_id
-end
-select * from thesis where @student_id = student_id 
-go 
+if (exists(select *
+FROM grade_academic_thesis
+where grade_academic_thesis.student_id=@sid AND grade_academic_thesis.title=@title))
+BEGIN
 
---EXEC ViewMyThesis @student_id=1, @title = 'Mechanical Uses'
+Update thesis
+SET thesis.total_grade=((select grade_academic_thesis.external_examiner_grade
+FROM grade_academic_thesis
+where grade_academic_thesis.student_id=@sid AND grade_academic_thesis.title=@title)+(select grade_academic_thesis.lecturer_grade
+FROM grade_academic_thesis
+where grade_academic_thesis.student_id=@sid AND grade_academic_thesis.title=@title))/2
+Where thesis.student_id=@sid AND thesis.title=@title
+
+END
+END
+else if exists(Select *
+from student INNER JOIN industrial ON student.Assigned_Project_Code=industrial.industrial_code
+where student.student_id=@sid)
+BEGIN
+
+if (exists(select *
+FROM grade_industrial_thesis
+where student_id=@sid AND  title=@title) )
+BEGIN
+
+Update thesis
+SET thesis.total_grade=((select grade_industrial_thesis.company_gradeaaaaaa
+FROM grade_industrial_thesis
+where  grade_industrial_thesis.student_id=@sid AND grade_industrial_thesis.title=@title)+(select grade_industrial_thesis.staff_grade
+FROM grade_industrial_thesis
+where grade_industrial_thesis.student_id=@sid AND grade_industrial_thesis.title=@title))/2
+Where thesis.student_id=@sid AND thesis.title=@title
+
+END
+END
+
+SELECT *
+From thesis
+Where thesis.student_id=@sid AND thesis.title=@title
+go
+
+--drop proc ViewMyThesis
+
+--EXEC ViewMyThesis @sid=1, @title = 'Mechanical Uses'
 
 CREATE PROC SubmitMyThesis--3c
 @student_id int,
@@ -434,14 +458,17 @@ CREATE PROC AddEmployee--4a
 as
 if exists(select company_id from company where @CompanyID = company_id)
 begin
-insert into employee(company_id, email, phone, field, employee_password)
-values(@CompanyID, @email, @phone_number, @field, @CompanyID)
-select staff_id from employee where email = @email
-select employee_password from employee where email = @email
-select company_id from employee where email = @email
+insert into employee(company_id, email, phone, field, employee_password,username)
+values(@CompanyID, @email, @phone_number, @field, @CompanyID, @name)
+select staff_id, employee_password,company_id from employee where email = @email
+
 end
 
 go
+
+--drop proc AddEmployee
+
+--exec AddEmployee @CompanyID=7,@email='hiii@gmail.com',@name='haisan',@phone_number=209282,@field='CS'
 
 CREATE PROC CompanyCreateLocalProject--4b
 @company_id int,
@@ -461,8 +488,9 @@ values(@proj_code, @company_id)
 insert into major_has_bachelor_project(major_code, project_code)
 values(@major_code, @proj_code)
 end
-
 go
+
+--drop proc CompanyCreateLocalProject
 
 CREATE PROC AssignEmployee--4c
 @bachelor_code varchar(10), 
