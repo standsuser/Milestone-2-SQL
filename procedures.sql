@@ -158,10 +158,10 @@ GO
 CREATE PROC ViewProfile --2b
 @user_id int
 as
-select * from users where @user_id = users_id
+select users_id,username,email,user_role,phone_number from users where @user_id = users_id
 go
 
-
+--drop proc ViewProfile
 --EXEC ViewProfile @user_id = 1
 
 
@@ -216,10 +216,6 @@ go
 create proc ViewMyThesis
 @sid int, @title varchar(50)
 as
-if exists(Select *
-from student INNER JOIN academic ON student.Assigned_Project_Code=academic.academic_code
-where student.student_id=@sid)
-BEGIN
 
 if (exists(select *
 FROM grade_academic_thesis
@@ -234,29 +230,20 @@ FROM grade_academic_thesis
 where grade_academic_thesis.student_id=@sid AND grade_academic_thesis.title=@title))/2
 Where thesis.student_id=@sid AND thesis.title=@title
 
-END
-END
-else if exists(Select *
-from student INNER JOIN industrial ON student.Assigned_Project_Code=industrial.industrial_code
-where student.student_id=@sid)
-BEGIN
 
-if (exists(select *
+END
+else if (exists(select *
 FROM grade_industrial_thesis
 where student_id=@sid AND  title=@title) )
 BEGIN
-
 Update thesis
-SET thesis.total_grade=((select grade_industrial_thesis.company_gradeaaaaaa
+SET thesis.total_grade=((select grade_industrial_thesis.company_grade
 FROM grade_industrial_thesis
 where  grade_industrial_thesis.student_id=@sid AND grade_industrial_thesis.title=@title)+(select grade_industrial_thesis.staff_grade
 FROM grade_industrial_thesis
 where grade_industrial_thesis.student_id=@sid AND grade_industrial_thesis.title=@title))/2
 Where thesis.student_id=@sid AND thesis.title=@title
-
 END
-END
-
 SELECT *
 From thesis
 Where thesis.student_id=@sid AND thesis.title=@title
@@ -264,7 +251,8 @@ go
 
 --drop proc ViewMyThesis
 
---EXEC ViewMyThesis @sid=1, @title = 'Mechanical Uses'
+--EXEC ViewMyThesis @sid=27, @title = 'Study on X'
+--EXEC ViewMyThesis @sid=25, @title = 'Mechanical Uses'
 
 CREATE PROC SubmitMyThesis--3c
 @student_id int,
