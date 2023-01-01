@@ -334,31 +334,43 @@ go
 CREATE PROC ViewMyDefense--3e
 @student_id int
 as
-declare @grade1 decimal
-declare @project varchar(10)
-set @project = (select Assigned_Project_Code from student where @student_id = student_id)
 
-IF EXISTS(select * from academic where @project = academic_code)
-begin
-declare @external_examiner_grade decimal, @lecturer_grade decimal
-select @external_examiner_grade = external_examiner_grade from grade_academic_thesis
-select @lecturer_grade = lecturer_grade from grade_academic_thesis
-if @external_examiner_grade IS NOT NULL and @lecturer_grade IS NOT NULL 
-set @grade1 = (@external_examiner_grade + @lecturer_grade)/2
-update defense set total_grade = @grade1 where @student_id = student_id
-end
-IF EXISTS(select * from industrial where @project = industrial_code)
-begin
-declare @company_grade decimal, @employee_grade decimal
-select @company_grade = company_grade from grade_industrial_thesis
-select @employee_grade = staff_grade from grade_industrial_thesis
-if @employee_grade IS NOT NULL and @company_grade IS NOT NULL 
-set @grade1 = (@company_grade + @employee_grade)/2
-update defense set total_grade = @grade1 where @student_id = student_id
-end
-select * from defense
+if (exists(select *
+FROM grade_academic_defense
+where student_id=@student_id))
+BEGIN
+
+Update defense
+SET defense.total_grade=((select grade_academic_defense.external_examiner_grade
+FROM grade_academic_defense
+where grade_academic_defense.student_id=@student_id)+(select grade_academic_defense.lecturer_grade
+FROM grade_academic_defense
+where grade_academic_defense.student_id=@student_id))/2
+Where defense.student_id=@student_id
+
+
+END
+
+else if (exists(select *
+FROM grade_industrial_defense
+where student_id=@student_id) )
+BEGIN
+Update defense
+SET defense.total_grade=((select grade_industrial_defense.company_grade
+FROM grade_industrial_defense
+where  grade_industrial_defense.student_id=@student_id)+(select grade_industrial_defense.employee_grade
+FROM grade_industrial_defense
+where grade_industrial_defense.student_id=@student_id))/2
+Where defense.student_id=@student_id
+END
+SELECT *
+From defense
+Where defense.student_id=@student_id 
 go
 
+
+--drop proc ViewMyDefense
+--EXEC ViewMyDefense @student_id=25
 
 CREATE PROC UpdateMyDefense--3f
 @student_id int,
