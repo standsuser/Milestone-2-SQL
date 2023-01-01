@@ -380,6 +380,8 @@ update defense set content = @defense_content where @student_id = student_id
 go
 
 
+--EXEC UpdateMyDefense @student_id=1 , @defense_content='newest content'
+
 CREATE PROC ViewMyBachelorProjectGrade--3g
 @student_id int,
 @bachelor_grade decimal(4,2) output
