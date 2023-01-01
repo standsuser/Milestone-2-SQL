@@ -271,17 +271,64 @@ CREATE PROC ViewMyProgressReport--3d
 @date datetime
 as
 declare @lecturer_grade int
-if @date is null 
-begin
+declare @company_grade int
+
 select @lecturer_grade = lecturer_grade from grade_academic_progress_report where @student_id = student_id
-update progress_report set grade = @lecturer_grade
+select @company_grade = company_grade from grade_industrial_progress_report where @student_id = student_id
+
+if @date is null AND @student_id is not null
+begin
+
+
+if (exists(select *
+FROM grade_academic_progress_report
+where grade_academic_progress_report.student_id=@student_id))
+BEGIN
+update progress_report set grade = @lecturer_grade  where @student_id = student_id 
+
 select * from progress_report where @student_id = student_id order by progress_report_date asc
 end
-else
-select @lecturer_grade = lecturer_grade from grade_academic_progress_report where @student_id = student_id
-update progress_report set grade = @lecturer_grade
-select * from progress_report where @student_id = student_id and @date = progress_report_date
+
+else if (exists(select *
+FROM grade_industrial_progress_report
+where grade_industrial_progress_report.student_id=@student_id))
+BEGIN
+select @lecturer_grade = lecturer_grade from grade_industrial_progress_report where @student_id = student_id
+update progress_report set grade = (@lecturer_grade +@company_grade) /2  where @student_id = student_id 
+
+select * from progress_report where @student_id = student_id order by progress_report_date asc
+end
+end
+
+else if @date is not null AND @student_id is not null
+begin
+
+
+if (exists(select *
+FROM grade_academic_progress_report
+where grade_academic_progress_report.student_id=@student_id  AND grade_academic_progress_report.progress_report_date=@date))
+BEGIN
+update progress_report set grade = @lecturer_grade where @student_id = student_id AND  @date = progress_report_date
+
+select * from progress_report where @student_id = student_id and @date = progress_report_date order by progress_report_date asc
+end
+
+else if (exists(select *
+FROM grade_industrial_progress_report
+where grade_industrial_progress_report.student_id=@student_id AND grade_industrial_progress_report.progress_report_date=@date))
+BEGIN
+select @lecturer_grade = lecturer_grade from grade_industrial_progress_report where @student_id = student_id
+update progress_report set grade = (@lecturer_grade +@company_grade) /2 where @student_id = student_id AND  @date = progress_report_date
+
+select * from progress_report where @student_id = student_id and @date = progress_report_date order by progress_report_date asc
+end
+
+end
 go
+
+--EXEC ViewMyProgressReport @student_id=1 , @date='9/7/2022'
+--EXEC ViewMyProgressReport @student_id=25 , @date=null
+--drop proc ViewMyProgressReport
 
 
 CREATE PROC ViewMyDefense--3e
