@@ -444,7 +444,7 @@ go
 
 --drop proc BookMeeting
 --EXEC BookMeeting @sid= 23 , @meeting_id= 1
---EXEC BookMeeting @sid= 23 , @meeting_id= 8
+--EXEC BookMeeting @sid= 23 , @meeting_id= 5
 
 CREATE PROC ViewMeeting --3j
 @meeting_id int,
