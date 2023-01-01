@@ -383,23 +383,32 @@ go
 --EXEC UpdateMyDefense @student_id=1 , @defense_content='newest content'
 
 CREATE PROC ViewMyBachelorProjectGrade--3g
-@student_id int,
-@bachelor_grade decimal(4,2) output
+@student_id int
 as
+declare  @bachelor_grade decimal(4,2) 
+
+
 declare @thesis_grade decimal
 declare @defense_grade decimal
 declare @cprg decimal
+
 select @thesis_grade = total_grade  from thesis where @student_id = student_id 
 select @defense_grade =total_grade from defense where @student_id = student_id
 select @cprg= grade from progress_report where @student_id = student_id
+
 if @cprg is null or @defense_grade is null or @thesis_grade is null
-return null
+update student set TotalBachelorGrade =  null where  student_id=@student_id
+
+
 else 
-update student set TotalBachelorGrade =  0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg where student_id=@student_id
-set @bachelor_grade = 0.3*@thesis_grade + 0.3*@defense_grade + 0.4*@cprg
-return @bachelor_grade
+update student set TotalBachelorGrade =  (0.3*@thesis_grade) + (0.3*@defense_grade) + (0.4*@cprg) where student_id=@student_id
+
+select TotalBachelorGrade from student where student_id=@student_id
+
 go
 
+--drop proc ViewMyBachelorProjectGrade
+--EXEC ViewMyBachelorProjectGrade @student_id=27
 
 CREATE PROC ViewNotBookedMeetings--3h
 @student_id int
