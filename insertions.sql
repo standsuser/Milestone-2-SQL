@@ -145,6 +145,7 @@ values (1,1),
 (3,9),
 (4,25),
 (4,10);
+insert into meeting_attendents(meeting_id ,attendant_id ) values (6,8)
 
 insert into thesis (student_id,title,deadline,pdf_doc,total_grade)
 values (1,'Mechanical Uses','2022-6-26','pdf 1',95.8),

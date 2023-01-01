@@ -421,8 +421,8 @@ FROM meeting
 INNER JOIN meeting_attendents
 ON meeting.meeting_id = meeting_attendents.meeting_id
 
-WHERE ( attendant_id  ) 
-NOT IN(SELECT student_id FROM student)
+WHERE (( attendant_id  ) 
+NOT IN(SELECT student_id FROM student)) OR ((meeting.meeting_id) NOT IN(select meeting_attendents.meeting_id from meeting_attendents))
 ORDER BY meeting_date
 go
 
