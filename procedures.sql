@@ -479,16 +479,13 @@ CREATE PROC StudentAddToDo --3k
 as
 IF EXISTS(select meeting_id from meeting where @meeting_id = meeting_id)
     BEGIN
-        IF EXISTS(select meeting_id from meeting_to_do_list where @meeting_id = meeting_id)
-            BEGIN
-                UPDATE meeting_to_do_list
-                SET to_do_list = @to_do_list
-                WHERE meeting_id = @meeting_id
-            END
-        ELSE
             INSERT INTO meeting_to_do_list(meeting_id ,to_do_list) values (@meeting_id, @to_do_list)
     END
 GO
+
+--drop proc StudentAddToDo
+--EXEC StudentAddToDo @meeting_id=1, @to_do_list='hi i am new'
+
 
 --start of 4
 CREATE PROC AddEmployee--4a
@@ -643,17 +640,11 @@ CREATE PROC LecturerAddToDo --5d
 as
 IF EXISTS(select meeting_id from meeting where @meeting_id = meeting_id)
     BEGIN
-        IF EXISTS(select meeting_id from meeting_to_do_list where @meeting_id = meeting_id)
-            BEGIN
-                UPDATE meeting_to_do_list
-                SET to_do_list = @to_do_list
-                WHERE meeting_id = @meeting_id
-            END
-        ELSE
+
             INSERT INTO meeting_to_do_list(meeting_id ,to_do_list) values (@meeting_id, @to_do_list)
     END
 GO
-
+--drop proc LecturerAddToDo
 
 
 CREATE PROC ViewMeetingLecturer --5e
