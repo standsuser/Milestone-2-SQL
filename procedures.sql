@@ -438,21 +438,13 @@ as
 
 IF EXISTS(select meeting_id from meeting where @meeting_id = meeting.meeting_id)
 BEGIN
-IF EXISTS (
-SELECT meeting.meeting_id FROM meeting INNER JOIN meeting_attendents ON meeting.meeting_id = meeting_attendents.meeting_id
-
-WHERE ( attendant_id  ) 
-IN(SELECT student_id FROM student)
-)
-begin
-print 'meeting is already booked by a student'
-
-END
-ELSE INSERT INTO meeting_attendents(meeting_id,attendant_id) VALUES (@meeting_id,@sid)
+INSERT INTO meeting_attendents(meeting_id,attendant_id) VALUES (@meeting_id,@sid)
 end
 go
 
+--drop proc BookMeeting
 --EXEC BookMeeting @sid= 23 , @meeting_id= 1
+--EXEC BookMeeting @sid= 23 , @meeting_id= 8
 
 CREATE PROC ViewMeeting --3j
 @meeting_id int,
