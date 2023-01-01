@@ -456,20 +456,13 @@ IF(@meeting_id is null)
         ON meeting.meeting_id = meeting_attendents.meeting_id
         where (attendant_id= @sid)  
 
-         Select to_do_list 
-        from meeting_to_do_list INNER JOIN meeting
-        ON meeting_to_do_list.meeting_id = meeting.meeting_id
-        where (meeting_to_do_list.meeting_id= meeting.meeting_id)
     end
 ELSE begin
         SELECT * from meeting INNER JOIN meeting_attendents
         ON meeting.meeting_id = meeting_attendents.meeting_id
         where (attendant_id= @sid and meeting.meeting_id=@meeting_id) 
          
-        Select to_do_list 
-        from meeting_to_do_list INNER JOIN meeting
-        ON meeting_to_do_list.meeting_id = meeting.meeting_id
-        where (meeting_to_do_list.meeting_id= meeting.meeting_id)
+
 
     end
 
@@ -477,6 +470,7 @@ go
 
 --drop proc ViewMeeting
 --EXEC ViewMeeting @meeting_id=null,@sid=1
+--EXEC ViewMeeting @meeting_id=1,@sid=1
 
 
 CREATE PROC StudentAddToDo --3k
