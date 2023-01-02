@@ -806,17 +806,16 @@ CREATE PROC LecGradePR--5l
 as 
     IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id) 
         begin 
-        IF EXISTS(select Assigned_Project_Code from student where student_id=@sid and exists(select academic_code from academic where academic_code= Assigned_Project_Code))
-            begin
+
             update grade_academic_progress_report
             SET lecturer_grade= @Lecturer_grade , progress_report_date = @date
              where lecturer_id=@Lecturer_id and student_id=@sid
-             end
+        
         end
 go
 
 --EXEC LecGradePR @Lecturer_id = 9, @sid =28, @date = '2022-9-4', @lecturer_grade = 77
-
+--drop proc LecGradePR
 
 
 --start of 6
