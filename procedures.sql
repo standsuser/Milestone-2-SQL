@@ -747,8 +747,10 @@ IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id)
                 where lecturer_id=@Lecturer_id and student_id=@sid and title=@thesis_title
             END
         ELSE
+        Begin
         INSERT into grade_academic_thesis(lecturer_id, student_id, title, lecturer_grade)
         VALUES (@Lecturer_id, @sid, @thesis_title, @Lecturer_grade)
+        end
     END
 GO
 
