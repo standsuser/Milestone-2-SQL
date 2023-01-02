@@ -610,7 +610,7 @@ CREATE PROC LecturerCreateLocalProject --5a
     @description varchar(200),
     @major_code varchar(10)
 as
-IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id)
+IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id)
     BEGIN
         INSERT INTO bachelor_project (code,project_name, pdescription)
             values (@proj_code, @title, @description)
@@ -618,6 +618,10 @@ IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id)
             values (@major_code, @proj_code)
     END
 GO
+
+--drop proc LecturerCreateLocalProject
+
+--Exec  LecturerCreateLocalProject @Lecturer_id = 10,    @proj_code = 404 ,    @title = 'amazing',   @description = 'wowowowow',    @major_code =123
 
 CREATE PROC SpecifyThesisDeadline --5b
     @deadline datetime
