@@ -499,9 +499,16 @@ CREATE PROC AddEmployee--4a
 as
 if exists(select company_id from company where @CompanyID = company_id)
 begin
-insert into employee(company_id, email, phone, field, employee_password,username)
-values(@CompanyID, @email, @phone_number, @field, @CompanyID, @name)
+insert into users(username,email,user_role,phone_number)
+values(@name, @email, 'Employee', @phone_number)
+
+declare @staffid int = (select max(users_id) from users)
+
+update users set user_password=@staffid WHERE users_id=@staffid
+insert into employee(company_id,staff_id, email, phone, field, employee_password,username)
+values(@CompanyID, @staffid, @email, @phone_number, @field, @staffid, @name)
 select staff_id, employee_password,company_id from employee where email = @email
+
 
 end
 
@@ -509,7 +516,7 @@ go
 
 --drop proc AddEmployee
 
---exec AddEmployee @CompanyID=7,@email='hiii@gmail.com',@name='haisan',@phone_number=209282,@field='CS'
+--exec AddEmployee @CompanyID=7,@email='hique555i@gmail.com',@name='haisan',@phone_number=209282,@field='CS'
 
 CREATE PROC CompanyCreateLocalProject--4b
 @company_id int,

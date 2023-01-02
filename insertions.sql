@@ -48,11 +48,11 @@ values (7,'PizzaFactory','pizza factory','PizzaFactor@gmail.com','uk berimingham
 (12,'travelagency','the travel agency','thetravelagency@gmail.com','uk london'),
 (13,'partycatering','party catering','partycaterers@gmail.com','cairo egypt ,new cairo');
 
-insert into employee(company_id,username,employee_password,email,field,phone)
-values(7,'maryamamr','maryam1881','maryamamr@gmail.com','CEO',56738742989),
-(11,'anasahmed','wanas26','anasahmed@gmail.com','Accountant',8372780928),
-(12,'gamalhany','gamalHH','gamalhany@gmail.com','HR',0880877700),
-(13,'malaksamir','samirk2','malaksamir@gmail.com','Supervisor',26376238762);
+insert into employee(company_id,staff_id, username,employee_password,email,field,phone)
+values(7,34,'maryamamr','maryam1881','maryamamr@gmail.com','CEO',56738742989),
+(11,43,'anasahmed','wanas26','anasahmed@gmail.com','Accountant',8372780928),
+(12,56,'gamalhany','gamalHH','gamalhany@gmail.com','HR',0880877700),
+(13,65,'malaksamir','samirk2','malaksamir@gmail.com','Supervisor',26376238762);
 
 insert into external_examiner (external_examiner_id,schedule)
 values(6,'9AM till 3 PM'),

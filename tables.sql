@@ -34,7 +34,7 @@ CREATE TABLE company (
 );
 
 CREATE TABLE employee(
-    staff_id INTEGER IDENTITY,
+    staff_id INTEGER ,
     company_id INTEGER,
     username VARCHAR(10),
     employee_password VARCHAR(10),
