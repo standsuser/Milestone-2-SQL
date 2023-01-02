@@ -550,7 +550,12 @@ begin
 update industrial set staff_id = @staff_id where @bachelor_code =industrial_code and company_id = @Company_id
 end
 
+select * from industrial inner join bachelor_project on industrial_code=code where staff_id=@staff_id
+
 go
+
+--drop proc AssignEmployee
+--exec AssignEmployee @bachelor_code=9 , @staff_id=65, @Company_id=11
 
 CREATE PROC CompanyGradeThesis--4d
 @Company_id int, 
