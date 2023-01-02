@@ -899,7 +899,7 @@ CREATE PROC ViewUsers--8a
 @User_type varchar(20), 
 @User_id int
 as
-select * from users where @User_id = users_id
+select users_id,username,email,user_role,phone_number from users where @User_id = users_id
 if(@User_type = 'Students')
 begin
 select * from student where @User_id = student_id
@@ -926,6 +926,9 @@ select * from lecturer where @User_id = lecturer_id
 end
 
 go
+
+--exec ViewUsers @User_type='Students', @User_id=23
+--drop proc ViewUsers
 
 CREATE PROC AssignAllStudentsToLocalProject--8b CHANGES HERE
 as
