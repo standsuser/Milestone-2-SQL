@@ -626,14 +626,11 @@ GO
 CREATE PROC SpecifyThesisDeadline --5b
     @deadline datetime
 as 
-declare @tmp_id INT
     UPDATE thesis SET deadline = @deadline
-IF EXISTS(SELECT @tmp_id as student_id  FROM student WHERE NOT EXISTS(select student_id FROM thesis ))
-    BEGIN 
-        INSERT INTO thesis(deadline,student_id) values (@deadline,@tmp_id)
-    END
 GO
 
+--drop proc SpecifyThesisDeadline
+--exec SpecifyThesisDeadline @deadline='2/2/2020'
 
 CREATE PROC CreateMeeting --5c
 @Lecturer_id int, 
@@ -642,7 +639,7 @@ CREATE PROC CreateMeeting --5c
 @date datetime, 
 @meeting_point varchar(5)
 as
-IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id)
+IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id)
     BEGIN
         INSERT INTO meeting(meeting_point ,lecturer_id ,meeting_date ,start_time ,end_time)
             values (@meeting_point, @Lecturer_id, @date , @start_time, @end_time)
@@ -650,6 +647,8 @@ IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id)
     END
 GO
 
+--drop proc CreateMeeting
+--Exec  CreateMeeting @Lecturer_id = 10 , @start_time= 3  , @end_time =6 , @date ='2/2/2020' , @meeting_point = 'A' 
 
 CREATE PROC LecturerAddToDo --5d
 @meeting_id int,
