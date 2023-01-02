@@ -668,20 +668,22 @@ CREATE PROC ViewMeetingLecturer --5e
 @meeting_id int
 as
 
-IF EXISTS(select lecturer_id from lecturers where @Lecturer_id = lecturer_id) 
+IF EXISTS(select lecturer_id from lecturer where @Lecturer_id = lecturer_id) 
     BEGIN
-        IF (@meeting_id = null)
+        IF (@meeting_id is null)
             BEGIN
            
-            SELECT * FROM meeting WHERE EXISTS(select attendant_id from meeting_attendents where attendant_id=@lecturer_id)
+            SELECT * FROM meeting WHERE lecturer_id=@lecturer_id
             ORDER BY meeting_date
             END
         ELSE
-            SELECT * FROM meeting WHERE EXISTS(select attendant_id from meeting_attendents where attendant_id=@lecturer_id and meeting_id=@meeting_id)
+            SELECT * FROM meeting WHERE lecturer_id=@lecturer_id and meeting_id=@meeting_id
                 ORDER BY meeting_date
     END
 GO
-
+--exec ViewMeetingLecturer @Lecturer_id=10, @meeting_id=null
+--exec ViewMeetingLecturer @Lecturer_id=10, @meeting_id=4
+--drop proc ViewMeetingLecturer
 
 CREATE PROC ViewEE --5f
 as
